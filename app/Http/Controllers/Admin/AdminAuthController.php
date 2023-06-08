@@ -12,7 +12,6 @@ class AdminAuthController extends Controller
 {
     use ApiResponse;
 
-
     public function __construct(private IAdminAuthService $adminAuthService)
     {
         $this->adminAuthService = $adminAuthService;
@@ -29,5 +28,31 @@ class AdminAuthController extends Controller
         }
     }
 
-   
+    public function forgotPassword(Request $request)
+    {
+        try {
+            //code...
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
+    public function resetPassword(Request $request)
+    {
+        try {
+
+        } catch (\Throwable $th) {
+
+        }
+    }
+
+    public function changePassword(Request $request)
+    {
+        try {
+            //code...
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
 }
