@@ -170,6 +170,8 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\Admin\Repository\AdminAuthRepositoryProvider::class,
         App\Providers\Admin\Service\AdminAuthServiceProvider::class,
+        App\Providers\Admin\Service\AdminClientServiceProvider::class,
+        
     ])->toArray(),
 
     /*

@@ -41,7 +41,6 @@ return [
             'provider' => 'users',
         ],
 
-
         'api' => [
             'driver' => 'sanctum',
             'provider' => 'users',
@@ -56,6 +55,26 @@ return [
             'driver' => 'sanctum',
             'provider' => 'admins',
         ],
+
+        'client' => [
+            'driver' => 'session',
+            'provider' => 'clients',
+        ],
+
+        'client-api' => [
+            'driver' => 'sanctum',
+            'provider' => 'clients',
+        ],
+
+        'vendor' => [
+            'driver' => 'session',
+            'provider' => 'vendors',
+        ],
+
+        'vendor-api' => [
+            'driver' => 'sanctum',
+            'provider' => 'vendors',
+        ],
     ],
 
     /*
@@ -67,8 +86,8 @@ return [
     | users are actually retrieved out of your database or other storage
     | mechanisms used by this application to persist your user's data.
     |
-    | If you have multiple user tables or models you may configure multiple
-    | sources which represent each model / table. These sources may then
+    | If you have multiple user tables or models, you may configure multiple
+    | sources that represent each model / table. These sources may then
     | be assigned to any extra authentication guards you have defined.
     |
     | Supported: "database", "eloquent"
@@ -81,14 +100,19 @@ return [
             'model' => App\Models\User::class,
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
-
         'admins' => [
             'driver' => 'eloquent',
             'model' => App\Models\Admin::class,
+        ],
+
+        'clients' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Client::class,
+        ],
+
+        'vendors' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Vendor::class,
         ],
     ],
 
@@ -117,6 +141,20 @@ return [
 
         'admins' => [
             'provider' => 'admins',
+            'table' => 'password_resets',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+
+        'clients' => [
+            'provider' => 'clients',
+            'table' => 'password_resets',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+
+        'vendors' => [
+            'provider' => 'vendors',
             'table' => 'password_resets',
             'expire' => 60,
             'throttle' => 60,
