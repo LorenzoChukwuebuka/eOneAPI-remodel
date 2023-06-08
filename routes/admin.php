@@ -8,7 +8,7 @@ Route::prefix('admin_restricted')->group(function () {
     #roles
     Route::controller(AdminAuthController::class)->group(function () {
         Route::post('login', 'login');
-        Route::post('forgotpassword', 'forgotpassword');
+        Route::post('forgetpassword', 'forgotpassword');
         Route::post('resetpassword', 'resetpassword');
         Route::post('changepassword', 'forgotpassword');
 

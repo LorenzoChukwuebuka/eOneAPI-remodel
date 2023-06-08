@@ -2,13 +2,15 @@
 
 namespace App\Services\Admin;
 
-use Validator;
 use App\DTO\Admin\AdminAuthDTO;
-use Illuminate\Support\Facades\Auth;
+use App\DTO\Admin\AdminForgetPasswordDTO;
+use App\DTO\Admin\AdminResetPasswordDTO;
 use App\Exceptions\CustomValidationException;
-use Illuminate\Validation\ValidationException;
-use App\Interface\IService\Admin\IAdminAuthService;
 use App\Interface\IRepository\Admin\IAdminAuthRepository;
+use App\Interface\IService\Admin\IAdminAuthService;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
+use Validator;
 
 class AdminAuthService implements IAdminAuthService
 {
@@ -39,15 +41,25 @@ class AdminAuthService implements IAdminAuthService
             ]);
         }
 
-         return $this->adminAuthRepository->login($adminDTO);
+        return $this->adminAuthRepository->login($adminDTO);
     }
 
     public function changePassword()
     {}
 
-    public function forgotPassword()
-    {}
+    public function forgotPassword(AdminForgetPasswordDTO $data)
+    {
+        $validator = Validator::make((array) $data, [
+            'email' => 'required|email|exists:admins',
+        ]);
 
-    public function resetPassword()
+        if ($validator->fails()) {
+            throw new CustomValidationException($validator);
+        }
+
+        return $this->adminAuthRepository->forgotPassword($data);
+    }
+
+    public function resetPassword(AdminResetPasswordDTO $data)
     {}
 }

@@ -2,9 +2,11 @@
 
 namespace App\Repository\Admin;
 
-use App\DTO\Admin\AdminAuthDTO;
-use App\Interface\IRepository\Admin\IAdminAuthRepository;
 use App\Models\Admin;
+use App\DTO\Admin\AdminAuthDTO;
+use App\DTO\Admin\AdminResetPasswordDTO;
+use App\DTO\Admin\AdminForgetPasswordDTO;
+use App\Interface\IRepository\Admin\IAdminAuthRepository;
 
 class AdminAuthRepository implements IAdminAuthRepository
 {
@@ -20,8 +22,8 @@ class AdminAuthRepository implements IAdminAuthRepository
     }
     public function changePassword()
     {}
-    public function forgotPassword()
+    public function forgotPassword(AdminForgetPasswordDTO $data)
     {}
-    public function resetPassword()
+    public function resetPassword(AdminResetPasswordDTO $data)
     {}
 }

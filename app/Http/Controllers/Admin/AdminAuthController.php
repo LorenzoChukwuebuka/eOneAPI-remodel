@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\DTO\Admin\AdminAuthDTO;
+use App\DTO\Admin\AdminForgetPasswordDTO;
 use App\Http\Controllers\Controller;
 use App\Interface\IService\Admin\IAdminAuthService;
 use App\Traits\ApiResponse;
@@ -22,7 +23,7 @@ class AdminAuthController extends Controller
         try {
             $data = new AdminAuthDTO(...$request->all());
             $result = $this->adminAuthService->login($data);
-            return $this->success("success", $result, 200);
+            return $this->success("login success", $result, 200);
         } catch (\Throwable $th) {
             return $this->fail($th->getMessage());
         }
@@ -31,9 +32,11 @@ class AdminAuthController extends Controller
     public function forgotPassword(Request $request)
     {
         try {
-            //code...
+            $data = new AdminForgetPasswordDTO(...$request->all());
+            $result = $this->adminAuthService->forgotPassword($data);
+            return $this->success("email sent successfully", $result, 200);
         } catch (\Throwable $th) {
-            //throw $th;
+            return $this->fail($th->getMessage());
         }
     }
 
