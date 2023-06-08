@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('phone_number');
             $table->string('email')->nullable();
             $table->string('status')->default('active');
-            $table->timestamps();
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();

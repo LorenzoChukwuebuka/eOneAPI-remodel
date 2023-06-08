@@ -12,7 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('user_loyalty_accounts', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
+            $table->string('transaction_type');
+            $table->string('transaction_ref');
+            $table->foreignId('vendor_id');
+            $table->foreignId('loyalty_id');
+            $table->foreignId('user_id');
+            $table->foreignId('card_id');
+            $table->double('points');
+            $table->double('amount');
+            $table->double('loyalty_balance');
+            $table->double('previous_balance');
+            $table->double('redemable');
+            $table->string('remarks')->nullable();
             $table->timestamps();
         });
     }

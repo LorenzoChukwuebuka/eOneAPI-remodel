@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->unsignedInteger();
             $table->foreignId('vendor_id')->unsignedInteger();
             $table->foreignId('card_id')->unsignedInteger();
-            $table->foreginId('loyalty_id')->unsignedInteger();
+            $table->foreignId('loyalty_id')->unsignedInteger();
             $table->double('transaction_amount');
             $table->double('unit_price');
             $table->double('quantity');

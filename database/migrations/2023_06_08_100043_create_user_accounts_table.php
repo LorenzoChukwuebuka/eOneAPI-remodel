@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('card_id')->unsignedIneger();
             $table->double('amount');
             $table->double('card_balance');
-            $table->doulbe('previous_balance');
+            $table->double('previous_balance');
             $table->string('remarks')->nullable();
             $table->string('status')->default('active');
             $table->timestamps();

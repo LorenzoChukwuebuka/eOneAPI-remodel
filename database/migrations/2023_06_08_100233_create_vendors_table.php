@@ -12,7 +12,20 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('vendors', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
+            $table->string('category');
+            $table->string('business_name');
+            $table->string('region');
+            $table->string('city');
+            $table->string('state');
+            $table->string('address');
+            $table->string('email')->nullable();
+            $table->string('phone_number')->nullable();
+            $table->string('status')->default('active');
+            $table->string('password');
+            $table->string('logo')->nullable();
+            $table->string('longitude')->nullable();
+            $table->string('latitude')->nullable();
             $table->timestamps();
         });
     }

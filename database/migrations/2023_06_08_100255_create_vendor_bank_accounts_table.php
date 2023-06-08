@@ -12,7 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('vendor_bank_accounts', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
+            $table->foreignId('vendor_id')->unsignedInteger();
+            $table->string('account_name');
+            $table->integer('account_number');
+            $table->string('bank_name');
+            $table->string('default_account')->default('yes');
+            $table->string('status')->default('active');
             $table->timestamps();
         });
     }
