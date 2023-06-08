@@ -61,5 +61,18 @@ class AdminAuthService implements IAdminAuthService
     }
 
     public function resetPassword(AdminResetPasswordDTO $data)
-    {}
+    {
+        $validator = Validator::make((array) $data, [
+            'email' => 'required|email|exists:admins',
+            'password' => 'required|string|min:6|confirmed',
+            'password_confirmation' => 'required',
+            'token'=>'required|exists:password_resets'
+        ]);
+
+        if ($validator->fails()) {
+            throw new CustomValidationException($validator);
+        }
+
+        return $this->adminAuthRepository->resetPassword($data);
+    }
 }

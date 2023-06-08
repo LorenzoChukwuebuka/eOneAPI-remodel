@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\DTO\Admin\AdminAuthDTO;
 use App\DTO\Admin\AdminForgetPasswordDTO;
+use App\DTO\Admin\AdminResetPasswordDTO;
 use App\Http\Controllers\Controller;
 use App\Interface\IService\Admin\IAdminAuthService;
 use App\Traits\ApiResponse;
@@ -43,19 +44,20 @@ class AdminAuthController extends Controller
     public function resetPassword(Request $request)
     {
         try {
-
+            $data = new AdminResetPasswordDTO(...$request->all());
+            $result = $this->adminAuthService->resetPassword($data);
+            return $this->success("password reset successful", $result, 200);
         } catch (\Throwable $th) {
-
+            return $this->fail($th->getMessage());
         }
     }
 
     public function changePassword(Request $request)
     {
         try {
-            //code...
+            return $request->all();
         } catch (\Throwable $th) {
             //throw $th;
         }
     }
-
 }
