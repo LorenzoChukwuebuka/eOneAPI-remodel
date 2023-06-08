@@ -2,16 +2,20 @@
 
 namespace App\Services\Admin;
 
-use App\DTO\Admin\AdminAuthDTO;
-use App\Exceptions\CustomValidationException;
-use App\Interface\IService\Admin\IAdminAuthService;
 use Validator;
+use App\DTO\Admin\AdminAuthDTO;
+use Illuminate\Support\Facades\Auth;
+use App\Exceptions\CustomValidationException;
+use Illuminate\Validation\ValidationException;
+use App\Interface\IService\Admin\IAdminAuthService;
+use App\Interface\IRepository\Admin\IAdminAuthRepository;
 
 class AdminAuthService implements IAdminAuthService
 {
 
-    public function __construct(private IAdminAuthRepository $adminAuthRepository){
-          $this->adminAuthRepository = $adminAuthRepository;
+    public function __construct(private IAdminAuthRepository $adminAuthRepository)
+    {
+        $this->adminAuthRepository = $adminAuthRepository;
     }
     public function login(AdminAuthDTO $adminDTO)
     {
@@ -24,7 +28,18 @@ class AdminAuthService implements IAdminAuthService
             throw new CustomValidationException($validator);
         }
 
-        return $adminAuthRepository->login($validator->validated());
+        $credentials = [
+            'email' => $adminDTO->email,
+            'password' => $adminDTO->password,
+        ];
+
+        if (!Auth::guard('admin')->attempt($credentials)) {
+            throw ValidationException::withMessages([
+                'email' => 'Invalid email or password',
+            ]);
+        }
+
+         return $this->adminAuthRepository->login($adminDTO);
     }
 
     public function changePassword()
