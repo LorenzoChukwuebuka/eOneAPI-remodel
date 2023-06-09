@@ -2,15 +2,17 @@
 
 namespace App\Interface\IService\Admin;
 
+use App\DTO\Admin\AdminClientDTO;
+
 interface IAdminClientService
 {
-    public function createClient();
+    public function createClient(AdminClientDTO $data);
 
-    public function getSingleClient();
+    public function getSingleClient($id);
 
-    public function updateClient();
+    public function updateClient($id);
 
-    public function deleteClient();
+    public function deleteClient($id);
 
     public function getAllClients();
 }

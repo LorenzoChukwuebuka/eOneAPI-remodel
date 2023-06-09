@@ -2,9 +2,9 @@
 
 namespace App\Providers\Admin\Repository;
 
-use Illuminate\Support\ServiceProvider;
-use App\Repository\Admin\AdminClientRepository;
 use App\Interface\IRepository\Admin\IAdminClientRepository;
+use App\Repository\Admin\AdminClientRepository;
+use Illuminate\Support\ServiceProvider;
 
 class AdminClientRepositoryProvider extends ServiceProvider
 {
@@ -13,7 +13,7 @@ class AdminClientRepositoryProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(IAdminClientRepository::class,AdminClientRepository::class);
+        $this->app->bind(IAdminClientRepository::class, AdminClientRepository::class);
     }
 
     /**

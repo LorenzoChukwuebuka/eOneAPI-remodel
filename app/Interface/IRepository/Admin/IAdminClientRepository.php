@@ -2,15 +2,17 @@
 
 namespace App\Interface\IRepository\Admin;
 
+use App\DTO\Admin\AdminClientDTO;
+
 interface IAdminClientRepository
 {
-    public function createClient();
+    public function createClient(AdminClientDTO $data);
 
-    public function getSingleClient();
+    public function getSingleClient($id);
 
-    public function updateClient();
+    public function updateClient($id);
 
-    public function deleteClient();
+    public function deleteClient($id);
 
     public function getAllClients();
 }
