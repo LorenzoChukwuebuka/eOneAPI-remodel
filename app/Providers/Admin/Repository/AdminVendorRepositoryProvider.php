@@ -3,6 +3,8 @@
 namespace App\Providers\Admin\Repository;
 
 use Illuminate\Support\ServiceProvider;
+use App\Repository\Admin\AdminVendorRepository;
+use App\Interface\IRepository\Admin\IAdminVendorRepository;
 
 class AdminVendorRepositoryProvider extends ServiceProvider
 {
@@ -11,7 +13,7 @@ class AdminVendorRepositoryProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(IAdminVendorRepository::class,AdminVendorRepository::class);
     }
 
     /**

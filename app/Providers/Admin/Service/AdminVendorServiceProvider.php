@@ -3,6 +3,8 @@
 namespace App\Providers\Admin\Service;
 
 use Illuminate\Support\ServiceProvider;
+use App\Services\Admin\AdminVendorService;
+use App\Interface\IService\Admin\IAdminVendorService;
 
 class AdminVendorServiceProvider extends ServiceProvider
 {
@@ -11,7 +13,7 @@ class AdminVendorServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(IAdminVendorService::class,AdminVendorService::class);
     }
 
     /**
