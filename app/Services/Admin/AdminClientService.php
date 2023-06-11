@@ -3,6 +3,7 @@
 namespace App\Services\Admin;
 
 use App\DTO\Admin\AdminClientDTO;
+use App\DTO\Admin\AdminEditClientDTO;
 use App\Exceptions\CustomValidationException;
 use App\Interface\IRepository\Admin\IAdminClientRepository;
 use App\Interface\IService\Admin\IAdminClientService;
@@ -40,11 +41,15 @@ class AdminClientService implements IAdminClientService
         return $this->adminClientRepository->getSingleClient($id);
     }
 
-    public function updateClient($id)
-    {}
+    public function updateClient(AdminEditClientDTO $data)
+    {
+        return $this->adminClientRepository->updateClient($data);
+    }
 
     public function deleteClient($id)
-    {}
+    {
+        return $this->adminClientRepository->deleteClient($id);
+    }
 
     public function getAllClients()
     {

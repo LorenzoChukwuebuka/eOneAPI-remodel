@@ -3,6 +3,7 @@
 namespace App\Interface\IService\Admin;
 
 use App\DTO\Admin\AdminClientDTO;
+use App\DTO\Admin\AdminEditClientDTO;
 
 interface IAdminClientService
 {
@@ -10,7 +11,7 @@ interface IAdminClientService
 
     public function getSingleClient($id);
 
-    public function updateClient($id);
+    public function updateClient(AdminEditClientDTO $data);
 
     public function deleteClient($id);
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\DTO\Admin\AdminClientDTO;
+use App\DTO\Admin\AdminEditClientDTO;
 use App\Http\Controllers\Controller;
 use App\Interface\IService\Admin\IAdminClientService;
 use App\Traits\ApiResponse;
@@ -36,25 +37,28 @@ class AdminClientController extends Controller
     {
         try {
             $result = $this->adminClientService->getSingleClient($id);
-            return $this->success('retrieved successfully', $result,200);
+            return $this->success('retrieved successfully', $result, 200);
         } catch (\Throwable $th) {
             return $this->fail($th->getMessage());
         }
     }
 
-    public function updateClient(Request $request)
+    public function updateClient(Request $request, $id)
     {
         try {
-            //code...
+            $data = new AdminEditClientDTO($id, ...$request->all());
+            $result = $this->adminClientService->updateClient($data);
+            return $this->success('updated successfully', $result, 200);
         } catch (\Throwable $th) {
-            //throw $th;
+            return $this->fail($th->getMessage());
         }
     }
 
-    public function deleteClient(Request $request)
+    public function deleteClient($id)
     {
         try {
-            //code...
+            $result = $this->adminClientService->deleteClient($id);
+            return $this->success('deleted Client successfully', $result, 200);
         } catch (\Throwable $th) {
             return $this->fail($th->getMessage());
         }

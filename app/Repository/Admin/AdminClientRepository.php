@@ -3,6 +3,7 @@
 namespace App\Repository\Admin;
 
 use App\DTO\Admin\AdminClientDTO;
+use App\DTO\Admin\AdminEditClientDTO;
 use App\Interface\IRepository\Admin\IAdminClientRepository;
 use App\Models\Client;
 use Illuminate\Support\Facades\Hash;
@@ -30,12 +31,22 @@ class AdminClientRepository implements IAdminClientRepository
 
     public function getSingleClient($id)
     {
-        return $this->clientModel->where('id', $id)->get();
+        return $this->clientModel::with('vendors')->where('id', $id)->get();
     }
 
-    public function updateClient($id)
+    public function updateClient(AdminEditClientDTO $data)
     {
-         $client = $this->clientModel::find($id);
+        $client = $this->clientModel::find($data->id);
+
+        $client->businessname = $data->businessname ?? $client->businessname;
+        $client->region = $data->region ?? $client->region;
+        $client->city = $data->city ?? $client->city;
+        $client->state = $data->state ?? $client->state;
+        $client->address = $data->address ?? $client->address;
+        $client->email = $data->email ?? $client->email;
+        $client->phone_number = $data->phone_number ?? $client->phone_number;
+
+        return $client->save();
     }
 
     public function deleteClient($id)
@@ -45,6 +56,6 @@ class AdminClientRepository implements IAdminClientRepository
 
     public function getAllClients()
     {
-        return $this->clientModel->get();
+        return $this->clientModel::with('vendors')->get();
     }
 }
