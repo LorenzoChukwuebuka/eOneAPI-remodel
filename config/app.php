@@ -172,6 +172,8 @@ return [
         App\Providers\Admin\Service\AdminAuthServiceProvider::class,
         App\Providers\Admin\Service\AdminClientServiceProvider::class,
         App\Providers\Admin\Repository\AdminClientRepositoryProvider::class,
+        App\Providers\Admin\Repository\AdminVendorRepositoryProvider::class,
+        App\Providers\Admin\Service\AdminVendorServiceProvider::class,
     ])->toArray(),
 
     /*

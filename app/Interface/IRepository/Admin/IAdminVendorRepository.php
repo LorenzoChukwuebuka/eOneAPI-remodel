@@ -2,10 +2,13 @@
 
 namespace App\Interface\IRepository\Admin;
 
-interface IAdminVendorService{
-    public function createVendor();
-    public function getSingleVendor();
+use App\DTO\Admin\AdminEditVendorDTO;
+use App\DTO\Admin\AdminCreateVendorDTO;
+
+interface IAdminVendorRepository{
+    public function createVendor(AdminCreateVendorDTO $data);
+    public function getSingleVendor($id);
     public function getAllVendors();
-    public function updateVendor();
-    public function deleteVendor();
+    public function updateVendor(AdminEditVendorDTO $data);
+    public function deleteVendor($id);
 }

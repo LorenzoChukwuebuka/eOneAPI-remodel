@@ -2,12 +2,24 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-
-class Vendor extends Model
+class Vendor extends Authenticatable
 {
-    use HasFactory,SoftDeletes;
+    use Notifiable, SoftDeletes, HasApiTokens;
+
+    protected $guarded = [];
+
+    protected $hidden = [
+        "password",
+    ];
+
+
+    public function users(){
+        return $this->hasMany(User::class);
+    }
 }
