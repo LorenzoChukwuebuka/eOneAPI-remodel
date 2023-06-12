@@ -26,6 +26,24 @@ return new class extends Migration
             $table->string('status')->default('active');
             $table->timestamps();
         });
+
+        DB::table('cards')->insert(
+            array(
+                "card_number" => "120000000000",
+                "expiry_date" => DB::raw('NOW()'),
+                "pin" => "0000",
+                "user_id" => 0,
+                "vendor_id" => 0,
+                "card_type_id" => 0,
+                "account_type_id" => 0,
+                "interest_rate" => 0,
+                "card_limit" => 0,
+                "card_token" => 0,
+                "status" => "inactive",
+                "created_at" => DB::raw('NOW()'),
+
+            )
+        );
     }
 
     /**

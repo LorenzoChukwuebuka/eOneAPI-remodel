@@ -25,7 +25,7 @@ class AdminVendorService implements IAdminVendorService
             "state" => "required",
             "city" => "required",
             "address" => "required",
-            "email" => "required|unique:vendors",
+            "email" => "email|required|unique:vendors",
             "longitude" => [],
             "latitude" => [],
             "password" => "required|min:6",
