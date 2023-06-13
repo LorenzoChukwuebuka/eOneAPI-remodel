@@ -22,7 +22,7 @@ class AdminClientController extends Controller
     {
         try {
 
-            $data = new AdminClientDTO(...$request->all());
+            $data = new AdminClientDTO(...$request->except(['api_id', 'api_key']));
 
             $result = $this->adminClientService->createClient($data);
 
@@ -46,7 +46,7 @@ class AdminClientController extends Controller
     public function updateClient(Request $request, $id)
     {
         try {
-            $data = new AdminEditClientDTO($id, ...$request->all());
+            $data = new AdminEditClientDTO($id, ...$request->except(['api_id', 'api_key']));
             $result = $this->adminClientService->updateClient($data);
             return $this->success('updated successfully', $result, 200);
         } catch (\Throwable $th) {
