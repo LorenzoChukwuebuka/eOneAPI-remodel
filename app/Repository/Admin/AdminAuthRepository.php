@@ -2,21 +2,27 @@
 
 namespace App\Repository\Admin;
 
-use Carbon\Carbon;
-use App\Models\Admin;
-use Illuminate\Support\Str;
 use App\DTO\Admin\AdminAuthDTO;
+use App\DTO\Admin\AdminForgetPasswordDTO;
+use App\DTO\Admin\AdminResetPasswordDTO;
+use App\Interface\IRepository\Admin\IAdminAuthRepository;
+use App\Models\Admin;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use App\DTO\Admin\AdminResetPasswordDTO;
-use App\DTO\Admin\AdminForgetPasswordDTO;
-use App\Interface\IRepository\Admin\IAdminAuthRepository;
+use Illuminate\Support\Str;
 
 class AdminAuthRepository implements IAdminAuthRepository
 {
     public function login(AdminAuthDTO $data)
     {
         $admin = Admin::where('email', $data->email)->first();
+        $comparePasswords = \password_verify ($data->password, $admin->password);
+
+        if (!$comparePasswords) {
+            throw new \Exception ("Password does not match", 1);
+        }
+        
         $token = $admin->createToken('myapptoken')->plainTextToken;
         return [
             'type' => 'admin',
@@ -39,7 +45,7 @@ class AdminAuthRepository implements IAdminAuthRepository
     }
     public function resetPassword(AdminResetPasswordDTO $data)
     {
-      return   $updatePassword = DB::table('password_resets')
+        return $updatePassword = DB::table('password_resets')
             ->where([
                 'email' => $data->email,
                 'token' => $data->token,

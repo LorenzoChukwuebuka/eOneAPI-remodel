@@ -2,7 +2,6 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Middleware\ApiMiddleware;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,14 +18,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::group(['middleware' => ApiMiddleware::class], function () {
+/*Route::group(['middleware' => ApiMiddleware::class], function () { */
 
-    require __DIR__ . '/admin.php';
+require __DIR__ . '/admin.php';
 
-    // require __DIR__ . '/client.php';
+require __DIR__ . '/client.php';
 
-    // require __DIR__ . '/vendors.php';
-});
+// require __DIR__ . '/vendors.php';
+//});
 
 Route::fallback(function () {
     return response()->json([
