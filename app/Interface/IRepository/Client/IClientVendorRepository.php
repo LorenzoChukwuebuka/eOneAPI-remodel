@@ -11,7 +11,7 @@ interface IClientVendorRepository
 
     public function getSingleVendor($id);
 
-    public function getAllVendorsForAParticularClient();
+    public function getAllVendorsForAParticularClient(int $id);
 
     public function getAllVendors();
 

@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Client;
 
-use App\DTO\Vendor\CreateVendorDTO;
-use App\Http\Controllers\Controller;
-use App\Interface\IService\Client\IClientVendorService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
+use App\DTO\Vendor\EditVendorDTO;
+use App\DTO\Vendor\CreateVendorDTO;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Exceptions\CustomValidationException;
+use App\Interface\IService\Client\IClientVendorService;
 
 class ClientVendorController extends Controller
 {
@@ -14,12 +17,42 @@ class ClientVendorController extends Controller
 
     public function __construct(IClientVendorService $clientVendorService)
     {
-        $this->$clientVendorService = $clientVendorService;
+        $this->clientVendorService = $clientVendorService;
     }
     public function createVendor(Request $request)
     {
         try {
-            $data = new CreateVendorDTO(...$request->except(['api_id', 'api_key']));
+
+            if ($request->hasFile('logo')) {
+                $validator = Validator::make($request->all(), [
+                    'logo' => 'required|file|mimes:jpeg,png|max:2048',
+                ]);
+
+                if ($validator->fails()) {
+                    throw new CustomValidationException($validator);
+                }
+
+                $fileUrl = $request->logo->store('vendor', 'public');
+            } else {
+                $fileUrl = null;
+            }
+
+            $data = new CreateVendorDTO(
+                $request->input('client_id'),
+                $request->input('category'),
+                $request->input('business_name'),
+                $request->input('region'),
+                $request->input('state'),
+                $request->input('city'),
+                $request->input('address'),
+                $request->input('email'),
+                $request->input('phone_number'),
+                $fileUrl, // Pass the file URL to the constructor
+                $request->input('longitude'),
+                $request->input('latitude'),
+                $request->input('password')
+            );
+
             $result = $this->clientVendorService->createVendor($data);
 
             return $this->success('vendor created successfully', $result, 201);
@@ -32,45 +65,84 @@ class ClientVendorController extends Controller
     public function getSingleVendor($id)
     {
         try {
-            //code...
+            $result = $this->clientVendorService->getSingleVendor($id);
+
+            return $this->success('vendor listed', $result, 200);
         } catch (\Throwable $th) {
-            //throw $th;
+            return $this->fail($th->getMessage());
         }
     }
 
     public function getAllVendorsForAParticularClient()
     {
         try {
-            //code...
+            $id = auth()->user()->id;
+
+            $result = $this->clientVendorService->getAllVendorsForAParticularClient($id);
+            return $this->success('vendors listed');
         } catch (\Throwable $th) {
-            //throw $th;
+            return $this->fail($th->getMessage());
         }
     }
 
-    public function getAllVendors()
+    // public function getAllVendors()
+    // {
+    //     try {
+    //         //code...
+    //     } catch (\Throwable $th) {
+    //         return $this->fail($th->getMessage());
+    //     }
+    // }
+
+    public function updateVendors(Request $request, $id)
     {
         try {
-            //code...
+
+            if ($request->hasFile('logo')) {
+                $validator = Validator::make($request->all(), [
+                    'logo' => 'required|file|mimes:jpeg,png|max:2048',
+                ]);
+
+                if ($validator->fails()) {
+                    throw new CustomValidationException($validator);
+                }
+
+                $fileUrl = $request->logo->store('vendor', 'public');
+            } else {
+                $fileUrl = null;
+            }
+
+            $data = new EditVendorDTO(
+                $id,
+                $request->input('client_id'),
+                $request->input('category'),
+                $request->input('business_name'),
+                $request->input('region'),
+                $request->input('state'),
+                $request->input('city'),
+                $request->input('address'),
+                $request->input('email'),
+                $request->input('phone_number'),
+                $fileUrl, // Pass the file URL to the constructor
+                $request->input('longitude'),
+                $request->input('latitude')
+            );
+
+            $result = $this->clientService->updateVendors($data);
+
+            return $this->success('updated vendors', $result,200);
         } catch (\Throwable $th) {
-            //throw $th;
+            return $this->fail($th->getMessage());
         }
     }
 
-    public function updateVendors()
+    public function deleteVendors($id)
     {
         try {
-            //code...
+            $result = $this->clientService->deleteVendors($id);
+            return $this->success('vendor deleted successfully', $result, 200);
         } catch (\Throwable $th) {
-            //throw $th;
-        }
-    }
-
-    public function deleteVendors()
-    {
-        try {
-            //code...
-        } catch (\Throwable $th) {
-            //throw $th;
+            return $this->fail($th->getMessage());
         }
     }
 
@@ -79,7 +151,7 @@ class ClientVendorController extends Controller
         try {
             //code...
         } catch (\Throwable $th) {
-            //throw $th;
+            return $this->fail($th->getMessage());
         }
     }
 }
