@@ -69,12 +69,14 @@ class ClientVendorService implements IClientVendorService
 
     public function updateVendors(EditVendorDTO $data)
     {
-        return $this->updateVendors($data);
+        return $this->clientVendorRepository->updateVendors($data);
     }
 
     public function deleteVendors($id)
     {
-        return $this->deleteVendors($id);
+
+   
+        return $this->clientVendorRepository->deleteVendors($id);
     }
 
     public function filterVendor()

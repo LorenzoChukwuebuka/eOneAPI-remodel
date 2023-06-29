@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Client;
 
+use App\DTO\Vendor\CreateVendorDTO;
+use App\DTO\Vendor\EditVendorDTO;
+use App\Exceptions\CustomValidationException;
+use App\Http\Controllers\Controller;
+use App\Interface\IService\Client\IClientVendorService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
-use App\DTO\Vendor\EditVendorDTO;
-use App\DTO\Vendor\CreateVendorDTO;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use App\Exceptions\CustomValidationException;
-use App\Interface\IService\Client\IClientVendorService;
 
 class ClientVendorController extends Controller
 {
@@ -96,6 +96,7 @@ class ClientVendorController extends Controller
 
     public function updateVendors(Request $request, $id)
     {
+
         try {
 
             if ($request->hasFile('logo')) {
@@ -128,18 +129,18 @@ class ClientVendorController extends Controller
                 $request->input('latitude')
             );
 
-            $result = $this->clientService->updateVendors($data);
+            $result = $this->clientVendorService->updateVendors($data);
 
-            return $this->success('updated vendors', $result,200);
+            return $this->success('updated vendors', $result, 200);
         } catch (\Throwable $th) {
-            return $this->fail($th->getMessage());
+            return $this->fail([$th->getMessage(),$th->getLine(),$th->getFile()]);
         }
     }
 
     public function deleteVendors($id)
     {
         try {
-            $result = $this->clientService->deleteVendors($id);
+            $result = $this->clientVendorService->deleteVendors($id);
             return $this->success('vendor deleted successfully', $result, 200);
         } catch (\Throwable $th) {
             return $this->fail($th->getMessage());
