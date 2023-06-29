@@ -85,15 +85,7 @@ class ClientVendorController extends Controller
         }
     }
 
-    // public function getAllVendors()
-    // {
-    //     try {
-    //         //code...
-    //     } catch (\Throwable $th) {
-    //         return $this->fail($th->getMessage());
-    //     }
-    // }
-
+    
     public function updateVendors(Request $request, $id)
     {
 
@@ -150,7 +142,7 @@ class ClientVendorController extends Controller
     public function filterVendor()
     {
         try {
-            //code...
+            #filter vendor this will be done with a dto
         } catch (\Throwable $th) {
             return $this->fail($th->getMessage());
         }
