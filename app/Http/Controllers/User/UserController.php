@@ -7,5 +7,16 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    //
+    public function forgetPassword()
+    {}
+
+    public function resetPassword()
+    {}
+
+    public function login()
+    {}
+
+    public function changePassword()
+    {}
+
 }
