@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Vendor;
 
+use App\DTO\User\CreateUserDTO;
 use App\Http\Controllers\Controller;
 use App\Interface\IService\Vendor\IVendorUserService;
 use App\Traits\ApiResponse;
@@ -21,8 +22,8 @@ class VendordUserController extends Controller
         try {
             $data = new CreateUserDTO(...$request->except(['api_id', 'api_key']));
             $result = $this->vendorUserService->create_users($data);
-            return $this->success('user created successfully',$result,201);
-            
+            return $this->success('user created successfully', $result, 201);
+
         } catch (\Throwable $th) {
             return $this->fail($th->getMessage());
         }
@@ -40,7 +41,7 @@ class VendordUserController extends Controller
     public function getAllUsersForAParticularVendor()
     {
         try {
-            //code...
+
         } catch (\Throwable $th) {
             return $this->fail($th->getMessage());
         }
@@ -49,7 +50,9 @@ class VendordUserController extends Controller
     public function editUsers(Request $request, $id)
     {
         try {
-            //code...
+            $data = new EditUserDTO($id, ...$request->except(["api_id", "api_key"]));
+            $result = $this->vendorUserService->editUsers($data);
+            return $this->success('users edited successfully', $result, 200);
         } catch (\Throwable $th) {
             return $this->fail($th->getMessage());
         }

@@ -20,4 +20,6 @@ interface IVendorUserRepository
     public function filterUsers();
 
     public function searchUsers();
+
+    public function getSingleUser($id);
 }
