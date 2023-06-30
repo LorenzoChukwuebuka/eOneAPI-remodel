@@ -40,11 +40,24 @@ class AdminVendorService implements IAdminVendorService
     }
     public function getSingleVendor($id)
     {
-        return $this->adminVendorRepository->getSingleVendor($id);
+        $result = $this->adminVendorRepository->getSingleVendor($id);
+
+        if ($result->count() == 0) {
+            throw new \Exception("No record found", 1);
+
+        }
+
+        return $result;
     }
     public function getAllVendors()
     {
-        return $this->adminVendorRepository->getAllVendors();
+        $result = $this->adminVendorRepository->getAllVendors();
+
+        if ($result->count() == 0) {
+            throw new \Exception("No record found", 1);
+        }
+
+        return $result;
     }
     public function updateVendor(AdminEditVendorDTO $data)
     {

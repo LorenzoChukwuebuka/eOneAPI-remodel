@@ -38,7 +38,13 @@ class AdminClientService implements IAdminClientService
 
     public function getSingleClient($id)
     {
-        return $this->adminClientRepository->getSingleClient($id);
+        $result = $this->adminClientRepository->getSingleClient($id);
+
+        if ($result->count() == 0) {
+            throw new \Exception("No result found", 1);
+        }
+
+        return $result;
     }
 
     public function updateClient(AdminEditClientDTO $data)
@@ -53,6 +59,12 @@ class AdminClientService implements IAdminClientService
 
     public function getAllClients()
     {
-        return $this->adminClientRepository->getAllClients();
+        $result = $this->adminClientRepository->getAllClients();
+
+        if ($result->count() == 0) {
+            throw new \Exception("No result found", 1);
+        }
+
+        return $result;
     }
 }
