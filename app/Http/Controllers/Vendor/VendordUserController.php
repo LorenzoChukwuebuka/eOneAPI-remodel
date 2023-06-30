@@ -41,7 +41,9 @@ class VendordUserController extends Controller
     public function getAllUsersForAParticularVendor()
     {
         try {
-
+            $id = auth()->user()->id;
+            $result = $this->vendorUserService->getAllUsersForAParticularVendor($id);
+            return $this->success('users retrieved successfully', $result, 200);
         } catch (\Throwable $th) {
             return $this->fail($th->getMessage());
         }
@@ -61,7 +63,8 @@ class VendordUserController extends Controller
     public function deleteUsers($id)
     {
         try {
-            //code...
+            $result = $this->vendorUserService->deleteUsers($id);
+            return $this->success('user deleted successfully', $result, 200);
         } catch (\Throwable $th) {
             return $this->fail($th->getMessage());
         }
