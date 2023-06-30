@@ -22,14 +22,13 @@ class VendordAuthController extends Controller
         try {
             $data = new VendorLoginDTO(...$request->except(['api_id', 'api_key']));
             $result = $this->vendorAuthService->login($data);
-
             return $this->success('vendor logged in successfully', $result, 200);
         } catch (\Throwable $th) {
             return $this->fail($th->getMessage());
         }
     }
 
-    public function forgetPin()
+    public function forgetPassword()
     {
         try {
             //code...
@@ -38,7 +37,7 @@ class VendordAuthController extends Controller
         }
     }
 
-    public function resetPin()
+    public function resetPassword()
     {
         try {
             //code...
@@ -47,7 +46,7 @@ class VendordAuthController extends Controller
         }
     }
 
-    public function changePin()
+    public function changePassword()
     {
         try {
             //code...

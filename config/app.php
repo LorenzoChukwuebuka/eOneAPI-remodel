@@ -178,6 +178,8 @@ return [
         App\Providers\Client\Repository\ClientAuthRepositoryProvider::class,
         App\Providers\Client\Service\ClientVendorServiceProvider::class,
         App\Providers\Client\Repository\ClientVendorRepositoryProvider::class,
+        App\Providers\Vendor\Service\VendorAuthServiceProvider::class,
+        App\Providers\Vendor\Repository\VendorAuthRepositoryProvider::class
     ])->toArray(),
 
     /*
