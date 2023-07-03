@@ -9,9 +9,7 @@ Route::prefix('vendor_restricted')->group(function () {
     Route::post('vendor-login', [VendordAuthController::class, 'login']);
 
     Route::group(['middleware' => ['auth:vendor,vendor-api']], function () {
-        Route::controller(VendordUserController::class)->group(function () {
-            Route::post('create-user', 'create_users');
-        });
+       
     });
 
 });

@@ -1,7 +1,31 @@
-<?php 
+<?php
 
 namespace App\Interface\IRepository\User;
 
-interface IUserRepository{
-    
+use App\DTO\User\CreateUserDTO;
+use App\DTO\User\EditUserDTO;
+
+interface IUserRepository
+{
+    public function create_users(CreateUserDTO $data);
+
+    public function getAllUsers();
+
+    public function editUsers(EditUserDTO $data);
+
+    public function deleteUsers($id);
+
+    public function filterUsers();
+
+    public function searchUsers();
+
+    public function getSingleUser($id);
+
+    public function forgetPassword();
+
+    public function resetPassword();
+
+    public function login();
+
+    public function changePassword();
 }
