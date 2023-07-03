@@ -2,8 +2,11 @@
 
 namespace App\Interface\IRepository\User;
 
-use App\DTO\User\CreateUserDTO;
 use App\DTO\User\EditUserDTO;
+use App\DTO\User\UserLoginDTO;
+use App\DTO\User\CreateUserDTO;
+use App\DTO\User\UserResetPasswordDTO;
+use App\DTO\User\UserForgetPasswordDTO;
 
 interface IUserRepository
 {
@@ -21,11 +24,13 @@ interface IUserRepository
 
     public function getSingleUser($id);
 
-    public function forgetPassword();
+    public function forgetPassword(UserForgetPasswordDTO $data);
 
-    public function resetPassword();
+    public function resetPassword(UserResetPasswordDTO $data);
 
-    public function login();
+    public function login(UserLoginDTO $data);
 
     public function changePassword();
+
+    public function verify_user();
 }

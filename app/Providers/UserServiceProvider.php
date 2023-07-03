@@ -2,7 +2,8 @@
 
 namespace App\Providers;
 
-use UserService;
+
+use App\Services\User\UserService;
 use Illuminate\Support\ServiceProvider;
 use App\Interface\IService\User\IUserService;
 

@@ -40,10 +40,7 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function vendor()
-    {
-        return $this->belongsTo(Vendor::class);
-    }
+ 
 
     public function card()
     {
