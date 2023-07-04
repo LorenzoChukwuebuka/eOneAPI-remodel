@@ -42,6 +42,8 @@ Route::prefix('admin_restricted')->group(function () {
             Route::get('get-all-users', 'get_all_users');
             Route::get('get-single-user/{id}', 'get_single_user');
             Route::put('edit-user/{id}', 'edit_user');
+            Route::delete('delete-user/{id}','delete_user');
+            Route::post('search-users','search_users');
         });
 
     });

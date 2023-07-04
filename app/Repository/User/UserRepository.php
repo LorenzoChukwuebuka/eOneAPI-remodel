@@ -38,7 +38,7 @@ class UserRepository implements IUserRepository
 
     public function editUsers(EditUserDTO $data)
     {
-        $user = $this->userModel::find($id);
+        $user = $this->userModel::find($data->id);
 
         $user->firstname = $data->firstName ?? $user->firstname;
         $user->lastname = $data->lastName ?? $user->lastname;

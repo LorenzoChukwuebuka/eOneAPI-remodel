@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\DTO\User\CreateUserDTO;
 use App\DTO\User\EditUserDTO;
+use App\DTO\User\SearchUserDTO;
 use App\Http\Controllers\Controller;
 use App\Interface\IService\User\IUserService;
 use App\Traits\ApiResponse;
@@ -54,8 +55,29 @@ class UserController extends Controller
     {
         try {
             $data = new EditUserDTO($id, ...$request->except(["api_id", "api_key"]));
-            $result = $this->userService->editUser($data);
+            $result = $this->userService->editUsers($data);
             return $this->success("user edited successful", $result, 200);
+        } catch (\Throwable $th) {
+            return $this->fail($th->getMessage());
+        }
+    }
+
+    public function delete_user($id)
+    {
+        try {
+            $result = $this->userService->deleteUsers($id);
+            return $this->success("user deleted successfully", $result, 200);
+        } catch (\Throwable $th) {
+            return $this->fail($th->getMessage());
+        }
+    }
+
+    public function search_users(Request $request)
+    {
+        try {
+            $data = new SearchUserDTO(...$request->except(['api_id', 'api_key']));
+            $result = $this->userService->searchUsers($data);
+            return $this->success('users found', $result, 200);
         } catch (\Throwable $th) {
             return $this->fail($th->getMessage());
         }

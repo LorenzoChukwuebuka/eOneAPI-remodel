@@ -1,16 +1,16 @@
 <?php
 namespace App\Services\User;
 
-use Validator;
-use App\DTO\User\EditUserDTO;
-use App\DTO\User\UserLoginDTO;
 use App\DTO\User\CreateUserDTO;
+use App\DTO\User\EditUserDTO;
 use App\DTO\User\SearchUserDTO;
-use App\DTO\User\UserResetPasswordDTO;
 use App\DTO\User\UserForgetPasswordDTO;
+use App\DTO\User\UserLoginDTO;
+use App\DTO\User\UserResetPasswordDTO;
 use App\Exceptions\CustomValidationException;
-use App\Interface\IService\User\IUserService;
 use App\Interface\IRepository\User\IUserRepository;
+use App\Interface\IService\User\IUserService;
+use Validator;
 
 class UserService implements IUserService
 {
@@ -34,6 +34,8 @@ class UserService implements IUserService
         if ($validator->fails()) {
             throw new CustomValidationException($validator);
         }
+
+        #send otp to user
 
         return $this->userRepository->create_users($data);
 
@@ -66,6 +68,7 @@ class UserService implements IUserService
 
     public function searchUsers(SearchUserDTO $data)
     {
+
         $result = $this->userRepository->searchUsers($data);
 
         if ($result->count() == 0) {
