@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\User;
 
-use App\DTO\User\CreateUserDTO;
+use App\Traits\ApiResponse;
+use Illuminate\Http\Request;
 use App\DTO\User\EditUserDTO;
+use App\DTO\User\UserLoginDTO;
+use App\DTO\User\CreateUserDTO;
 use App\DTO\User\SearchUserDTO;
 use App\Http\Controllers\Controller;
 use App\Interface\IService\User\IUserService;
-use App\Traits\ApiResponse;
-use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -113,7 +114,8 @@ class UserController extends Controller
     public function login(Request $request)
     {
         try {
-            //code...
+            $data = new UserLoginDTO(...$request->except(['api_id', 'api_key']));
+            return (array) $data;
         } catch (\Throwable $th) {
             return $this->fail($th->getMessage());
         }

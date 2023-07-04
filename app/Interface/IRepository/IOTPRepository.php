@@ -2,9 +2,11 @@
 
 namespace App\Interface\IRepository;
 
+use App\DTO\OTP\CreateOTPDTO;
+
 interface IOTPRepository
 {
-    public function createOTP();
-    public function deleteOTP();
+    public function createOTP(CreateOTPDTO $data);
+    public function deleteOTP($id);
     public function retrieveOTP();
 }
