@@ -2,11 +2,15 @@
 
 namespace App\Repository\User;
 
-use App\DTO\User\CreateUserDTO;
-use App\DTO\User\EditUserDTO;
-use App\Interface\IRepository\User\IUserRepository;
 use App\Models\User;
+use App\DTO\User\EditUserDTO;
+use App\DTO\User\UserLoginDTO;
+use App\DTO\User\CreateUserDTO;
+use App\DTO\User\SearchUserDTO;
 use Illuminate\Support\Facades\Hash;
+use App\DTO\User\UserResetPasswordDTO;
+use App\DTO\User\UserForgetPasswordDTO;
+use App\Interface\IRepository\User\IUserRepository;
 
 class UserRepository implements IUserRepository
 {
@@ -54,21 +58,23 @@ class UserRepository implements IUserRepository
     public function filterUsers()
     {}
 
-    public function searchUsers()
-    {}
+    public function searchUsers(SearchUserDTO $data)
+    {
+        return $this->userModel::where('firstname', 'LIKE', "%{$data->keyword}%")->orWhere('lastname', 'LIKE', "%{$data->keyword}%")->orWhere('username', 'LIKE', "%{$data->keyword}%")->latest()->get();
+    }
 
     public function getSingleUser($id)
     {
-        return $this->userModel::with('card')->where('id',$id)->first();
+        return $this->userModel::with('card')->where('id', $id)->first();
     }
 
-    public function forgetPassword()
+    public function forgetPassword(UserForgetPasswordDTO $data)
     {}
 
-    public function resetPassword()
+    public function resetPassword(UserResetPasswordDTO $data)
     {}
 
-    public function login()
+    public function login(UserLoginDTO $data)
     {}
 
     public function changePassword()

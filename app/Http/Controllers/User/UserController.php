@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\DTO\User\CreateUserDTO;
+use App\DTO\User\EditUserDTO;
 use App\Http\Controllers\Controller;
 use App\Interface\IService\User\IUserService;
 use App\Traits\ApiResponse;
@@ -29,7 +30,38 @@ class UserController extends Controller
         }
     }
 
-    public function forgetPassword()
+    public function get_all_users()
+    {
+        try {
+            $result = $this->userService->getAllUsers();
+            return $this->success("users retrieved successfully", $result, 200);
+        } catch (\Throwable $th) {
+            return $this->fail($th->getMessage());
+        }
+    }
+
+    public function get_single_user($id)
+    {
+        try {
+            $result = $this->userService->getSingleUser($id);
+            return $this->success("user retrieved successfull", $result, 200);
+        } catch (\Throwable $th) {
+            return $this->fail($th->getMessage());
+        }
+    }
+
+    public function edit_user(Request $request, $id)
+    {
+        try {
+            $data = new EditUserDTO($id, ...$request->except(["api_id", "api_key"]));
+            $result = $this->userService->editUser($data);
+            return $this->success("user edited successful", $result, 200);
+        } catch (\Throwable $th) {
+            return $this->fail($th->getMessage());
+        }
+    }
+
+    public function forgetPassword(Request $request)
     {
         try {
             //code...
@@ -38,7 +70,7 @@ class UserController extends Controller
         }
     }
 
-    public function verify_user()
+    public function verify_user(Request $request)
     {
         try {
             //code...
@@ -47,7 +79,7 @@ class UserController extends Controller
         }
     }
 
-    public function resetPassword()
+    public function resetPassword(Request $request)
     {
         try {
             //code...
@@ -56,7 +88,7 @@ class UserController extends Controller
         }
     }
 
-    public function login()
+    public function login(Request $request)
     {
         try {
             //code...
@@ -65,7 +97,7 @@ class UserController extends Controller
         }
     }
 
-    public function changePassword()
+    public function changePassword(Request $request)
     {
         try {
             //code...

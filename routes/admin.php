@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminClientController;
 use App\Http\Controllers\Admin\AdminVendorController;
+use App\Http\Controllers\User\UserController;
+use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin_restricted')->group(function () {
 
@@ -37,8 +37,11 @@ Route::prefix('admin_restricted')->group(function () {
             Route::delete('delete_vendor/{id}', 'deleteVendor');
         });
 
-        Route::controller(UserController::class)->group(function(){
+        Route::controller(UserController::class)->group(function () {
             Route::post('create-user', 'create_user');
+            Route::get('get-all-users', 'get_all_users');
+            Route::get('get-single-user/{id}', 'get_single_user');
+            Route::put('edit-user/{id}', 'edit_user');
         });
 
     });
