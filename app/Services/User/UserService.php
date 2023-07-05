@@ -1,21 +1,21 @@
 <?php
 namespace App\Services\User;
 
-use Validator;
 use App\Custom\MailSender;
-use Illuminate\Support\Str;
 use App\DTO\OTP\CreateOTPDTO;
-use App\DTO\User\EditUserDTO;
-use App\DTO\User\UserLoginDTO;
 use App\DTO\User\CreateUserDTO;
+use App\DTO\User\EditUserDTO;
 use App\DTO\User\SearchUserDTO;
-use App\DTO\User\VerifyUserDTO;
-use App\DTO\User\UserResetPasswordDTO;
 use App\DTO\User\UserForgetPasswordDTO;
-use App\Interface\IService\IOTPService;
+use App\DTO\User\UserLoginDTO;
+use App\DTO\User\UserResetPasswordDTO;
+use App\DTO\User\VerifyUserDTO;
 use App\Exceptions\CustomValidationException;
-use App\Interface\IService\User\IUserService;
 use App\Interface\IRepository\User\IUserRepository;
+use App\Interface\IService\IOTPService;
+use App\Interface\IService\User\IUserService;
+use Illuminate\Support\Str;
+use Validator;
 
 class UserService implements IUserService
 {
@@ -127,7 +127,7 @@ class UserService implements IUserService
 
         $user = $this->userRepository->login($data);
 
-        if ($user->email_verified == null) {
+        if ($user['data']->email_verified_at == null) {
             throw new \Exception("Your account has not been verified. Verify your account to continue");
 
         }
@@ -140,6 +140,22 @@ class UserService implements IUserService
 
     public function verify_user(VerifyUserDTO $data)
     {
-        
+        $validator = Validator::make((array) $data, [
+            "token" => "required|exists:o_t_p_s",
+        ]);
+
+        if ($validator->fails()) {
+            throw new CustomValidationException($validator);
+        }
+
+        $otpFind = $this->otpService->retrieveOTP($data);
+
+        if ($otpFind == null) {
+            throw new \Exception("Wrong token provided");
+
+        }
+
+        #if found retrieve the user id and update the user row
+
     }
 }

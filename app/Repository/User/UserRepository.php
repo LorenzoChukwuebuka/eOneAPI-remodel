@@ -8,6 +8,7 @@ use App\DTO\User\SearchUserDTO;
 use App\DTO\User\UserForgetPasswordDTO;
 use App\DTO\User\UserLoginDTO;
 use App\DTO\User\UserResetPasswordDTO;
+use App\DTO\User\VerifyUserDTO;
 use App\Interface\IRepository\User\IUserRepository;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -75,31 +76,33 @@ class UserRepository implements IUserRepository
     {}
 
     public function login(UserLoginDTO $data)
-{
-    $user = $this->userModel::where('username', $data->username)->first();
+    {
+        $user = $this->userModel::where('username', $data->username)->first();
 
-    if (!$user) {
-        throw new \Exception("User not found", 1);
+        if (!$user) {
+            throw new \Exception("User not found", 1);
+        }
+
+        $comparePasswords = \password_verify($data->password, $user->password);
+
+        if (!$comparePasswords) {
+            throw new \Exception("Password does not match", 1);
+        }
+
+        $token = $user->createToken('myapptoken')->plainTextToken;
+        return [
+            'type' => 'user',
+            'token' => $token,
+            'data' => $user,
+        ];
     }
-
-    $comparePasswords = \password_verify($data->password, $user->password);
-
-    if (!$comparePasswords) {
-        throw new \Exception("Password does not match", 1);
-    }
-
-    $token = $user->createToken('myapptoken')->plainTextToken;
-    return [
-        'type' => 'user',
-        'token' => $token,
-        'data' => $user,
-    ];
-}
-
 
     public function changePassword()
     {}
 
-    public function verify_user()
-    {}
+    public function verify_user(VerifyUserDTO $data)
+    {
+       
+    }
+
 }

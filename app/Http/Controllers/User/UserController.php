@@ -6,6 +6,7 @@ use App\DTO\User\CreateUserDTO;
 use App\DTO\User\EditUserDTO;
 use App\DTO\User\SearchUserDTO;
 use App\DTO\User\UserLoginDTO;
+use App\DTO\User\VerifyUserDTO;
 use App\Http\Controllers\Controller;
 use App\Interface\IService\User\IUserService;
 use App\Traits\ApiResponse;
@@ -96,7 +97,11 @@ class UserController extends Controller
     public function verify_user(Request $request)
     {
         try {
-            //code...
+            $data = new VerifyUserDTO(...$request->except(['api_id', 'api_key']));
+
+            $result = $this->userService->verify_user($data);
+
+            return $this->success('user verified successfully', $result, 200);
         } catch (\Throwable $th) {
             return $this->fail($th->getMessage());
         }

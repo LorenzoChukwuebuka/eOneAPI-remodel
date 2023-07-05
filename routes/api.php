@@ -22,6 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 /*Route::group(['middleware' => ApiMiddleware::class], function () { */
 
 Route::post('user-login', [UserController::class, 'login']);
+Route::post('verify-user',[UserController::class,'verify_user']);
 
 require __DIR__ . '/admin.php';
 

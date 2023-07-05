@@ -35,4 +35,6 @@ interface IUserRepository
     public function changePassword();
 
     public function verify_user(VerifyUserDTO $data);
+
+     
 }

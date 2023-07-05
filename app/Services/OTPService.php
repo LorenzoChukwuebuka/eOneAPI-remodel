@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\DTO\OTP\CreateOTPDTO;
+use App\DTO\User\VerifyUserDTO;
 use App\Interface\IRepository\IOTPRepository;
 use App\Interface\IService\IOTPService;
 
@@ -18,6 +19,8 @@ class OTPService implements IOTPService
     }
     public function deleteOTP($id)
     {}
-    public function retrieveOTP()
-    {}
+    public function retrieveOTP(VerifyUserDTO $data)
+    {
+        return $this->otpRepository->retrieveOTP($data);
+    }
 }
