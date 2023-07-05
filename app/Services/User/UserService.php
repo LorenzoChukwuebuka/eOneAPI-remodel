@@ -1,20 +1,21 @@
 <?php
 namespace App\Services\User;
 
-use App\Custom\MailSender;
-use App\DTO\OTP\CreateOTPDTO;
-use App\DTO\User\CreateUserDTO;
-use App\DTO\User\EditUserDTO;
-use App\DTO\User\SearchUserDTO;
-use App\DTO\User\UserForgetPasswordDTO;
-use App\DTO\User\UserLoginDTO;
-use App\DTO\User\UserResetPasswordDTO;
-use App\Exceptions\CustomValidationException;
-use App\Interface\IRepository\User\IUserRepository;
-use App\Interface\IService\IOTPService;
-use App\Interface\IService\User\IUserService;
-use Illuminate\Support\Str;
 use Validator;
+use App\Custom\MailSender;
+use Illuminate\Support\Str;
+use App\DTO\OTP\CreateOTPDTO;
+use App\DTO\User\EditUserDTO;
+use App\DTO\User\UserLoginDTO;
+use App\DTO\User\CreateUserDTO;
+use App\DTO\User\SearchUserDTO;
+use App\DTO\User\VerifyUserDTO;
+use App\DTO\User\UserResetPasswordDTO;
+use App\DTO\User\UserForgetPasswordDTO;
+use App\Interface\IService\IOTPService;
+use App\Exceptions\CustomValidationException;
+use App\Interface\IService\User\IUserService;
+use App\Interface\IRepository\User\IUserRepository;
 
 class UserService implements IUserService
 {
@@ -124,12 +125,21 @@ class UserService implements IUserService
             throw new CustomValidationException($validator);
         }
 
-        return $this->userRepository->login($data);
+        $user = $this->userRepository->login($data);
+
+        if ($user->email_verified == null) {
+            throw new \Exception("Your account has not been verified. Verify your account to continue");
+
+        }
+
+        return $user;
     }
 
     public function changePassword()
     {}
 
-    public function verify_user()
-    {}
+    public function verify_user(VerifyUserDTO $data)
+    {
+        
+    }
 }

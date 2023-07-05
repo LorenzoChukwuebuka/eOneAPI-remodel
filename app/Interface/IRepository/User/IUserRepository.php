@@ -6,6 +6,7 @@ use App\DTO\User\EditUserDTO;
 use App\DTO\User\UserLoginDTO;
 use App\DTO\User\CreateUserDTO;
 use App\DTO\User\SearchUserDTO;
+use App\DTO\User\VerifyUserDTO;
 use App\DTO\User\UserResetPasswordDTO;
 use App\DTO\User\UserForgetPasswordDTO;
 
@@ -33,5 +34,5 @@ interface IUserRepository
 
     public function changePassword();
 
-    public function verify_user();
+    public function verify_user(VerifyUserDTO $data);
 }
