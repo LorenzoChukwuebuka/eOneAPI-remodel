@@ -16,9 +16,10 @@ class UserVerifyAccountMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public $mailData;
+    public function __construct($mailData)
     {
-        //
+        $this->mailData = $mailData;
     }
 
     /**
@@ -37,7 +38,7 @@ class UserVerifyAccountMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'mail.user.verifyuseraccount',
         );
     }
 

@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::table('admins', function (Blueprint $table) {
             $table->string('email')->nullable();
+
+            
         });
     }
 

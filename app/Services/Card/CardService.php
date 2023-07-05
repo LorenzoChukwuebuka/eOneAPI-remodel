@@ -8,7 +8,9 @@ use App\Interface\IService\Card\ICardService;
 class CardService implements ICardService
 {
     public function create_card_for_users(CreateUserCardDTO $data)
-    {}
+    {
+        return $data;
+    }
 
     public function forget_card_pin()
     {}

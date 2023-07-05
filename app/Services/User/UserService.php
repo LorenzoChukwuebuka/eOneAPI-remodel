@@ -1,6 +1,8 @@
 <?php
 namespace App\Services\User;
 
+use App\Custom\MailSender;
+use App\DTO\OTP\CreateOTPDTO;
 use App\DTO\User\CreateUserDTO;
 use App\DTO\User\EditUserDTO;
 use App\DTO\User\SearchUserDTO;
@@ -9,15 +11,18 @@ use App\DTO\User\UserLoginDTO;
 use App\DTO\User\UserResetPasswordDTO;
 use App\Exceptions\CustomValidationException;
 use App\Interface\IRepository\User\IUserRepository;
+use App\Interface\IService\IOTPService;
 use App\Interface\IService\User\IUserService;
+use Illuminate\Support\Str;
 use Validator;
 
 class UserService implements IUserService
 {
 
-    public function __construct(IUserRepository $userRepository)
+    public function __construct(IUserRepository $userRepository, IOTPService $otpService)
     {
         $this->userRepository = $userRepository;
+        $this->otpService = $otpService;
     }
 
     public function create_users(CreateUserDTO $data)
@@ -37,7 +42,17 @@ class UserService implements IUserService
 
         #send otp to user
 
-        return $this->userRepository->create_users($data);
+        $token = Str::random(7);
+
+        $createuser = $this->userRepository->create_users($data);
+
+        $otpData = new CreateOTPDTO($createuser->id, $token);
+
+        $this->otpService->createOtp($otpData);
+
+        MailSender::verifyUserAccount($data->email, $token, $data->username);
+
+        return "success";
 
     }
 
