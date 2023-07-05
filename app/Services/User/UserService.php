@@ -99,7 +99,18 @@ class UserService implements IUserService
     {}
 
     public function login(UserLoginDTO $data)
-    {}
+    {
+        $validator = Validator::make((array) $data, [
+            "username" => "required|exists:users",
+            "password" => "required",
+        ]);
+
+        if ($validator->fails()) {
+            throw new CustomValidationException($validator);
+        }
+
+        return $this->userRepository->login($data);
+    }
 
     public function changePassword()
     {}

@@ -2,8 +2,9 @@
 
 namespace App\DTO\User;
 
-class UserLoginDTO{
-    public function __construct(public string $username, public string $password)
+class UserLoginDTO
+{
+    public function __construct(public readonly ?string $username = null, public readonly ?string $password = null)
     {
 
     }

@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\User\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,6 +20,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 /*Route::group(['middleware' => ApiMiddleware::class], function () { */
+
+Route::post('user-login', [UserController::class, 'login']);
 
 require __DIR__ . '/admin.php';
 

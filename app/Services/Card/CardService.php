@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Card;
+namespace App\Service\Card;
 
-use App\Http\Controllers\Controller;
+use App\DTO\Card\CreateUserCardDTO;
+use App\Interface\IService\Card\ICardService;
 
-class CardController extends Controller
+class CardService implements ICardService
 {
-    public function create_card_for_users()
+    public function create_card_for_users(CreateUserCardDTO $data)
     {}
 
     public function forget_card_pin()
@@ -26,5 +27,4 @@ class CardController extends Controller
 
     public function get_user_cards()
     {}
-
 }
