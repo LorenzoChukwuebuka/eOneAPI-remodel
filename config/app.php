@@ -181,9 +181,9 @@ return [
         App\Providers\Vendor\Service\VendorAuthServiceProvider::class,
         App\Providers\Vendor\Repository\VendorAuthRepositoryProvider::class,
         App\Providers\UserRepositoryProvider::class,
-        App\Providers\UserServiceProvider::class
-    
-       
+        App\Providers\UserServiceProvider::class,
+        App\Providers\OTPRepositoryProvider::class,
+        App\Providers\OTPServiceProvider::class,
     ])->toArray(),
 
     /*
