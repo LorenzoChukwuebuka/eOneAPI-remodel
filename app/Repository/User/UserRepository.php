@@ -2,16 +2,17 @@
 
 namespace App\Repository\User;
 
-use App\DTO\User\CreateUserDTO;
-use App\DTO\User\EditUserDTO;
-use App\DTO\User\SearchUserDTO;
-use App\DTO\User\UserForgetPasswordDTO;
-use App\DTO\User\UserLoginDTO;
-use App\DTO\User\UserResetPasswordDTO;
-use App\DTO\User\VerifyUserDTO;
-use App\Interface\IRepository\User\IUserRepository;
+use Carbon\Carbon;
 use App\Models\User;
+use App\DTO\User\EditUserDTO;
+use App\DTO\User\UserLoginDTO;
+use App\DTO\User\CreateUserDTO;
+use App\DTO\User\SearchUserDTO;
+use App\DTO\User\VerifyUserDTO;
 use Illuminate\Support\Facades\Hash;
+use App\DTO\User\UserResetPasswordDTO;
+use App\DTO\User\UserForgetPasswordDTO;
+use App\Interface\IRepository\User\IUserRepository;
 
 class UserRepository implements IUserRepository
 {
@@ -102,7 +103,12 @@ class UserRepository implements IUserRepository
 
     public function verify_user(VerifyUserDTO $data)
     {
-       
+       $user =  $this->userModel->find($data->user_id);
+
+       $user->email_verified_at = Carbon::now();
+
+       return $user->save();
+
     }
 
 }

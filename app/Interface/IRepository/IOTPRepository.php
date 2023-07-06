@@ -8,6 +8,6 @@ use App\DTO\User\VerifyUserDTO;
 interface IOTPRepository
 {
     public function createOTP(CreateOTPDTO $data);
-    public function deleteOTP($id);
+    public function deleteOTP($token);
     public function retrieveOTP(VerifyUserDTO $data);
 }

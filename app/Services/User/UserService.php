@@ -157,5 +157,11 @@ class UserService implements IUserService
 
         #if found retrieve the user id and update the user row
 
+        $data->user_id = $otpFind->user_id;
+
+        $this->userRepository->verify_user($data);
+
+        return $this->otpService->deleteOTP($data->token);
+
     }
 }

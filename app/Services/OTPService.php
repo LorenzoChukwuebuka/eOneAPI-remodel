@@ -17,8 +17,10 @@ class OTPService implements IOTPService
     {
         return $this->otpRepository->createOTP($data);
     }
-    public function deleteOTP($id)
-    {}
+    public function deleteOTP($token)
+    {
+        return $this->otpRepository->deleteOTP($token);
+    }
     public function retrieveOTP(VerifyUserDTO $data)
     {
         return $this->otpRepository->retrieveOTP($data);
