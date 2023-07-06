@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\DTO\OTP\CreateOTPDTO;
-use App\DTO\User\VerifyUserDTO;
 use App\Interface\IRepository\IOTPRepository;
 use App\Models\OTP;
 
@@ -22,18 +21,14 @@ class OTPRepository implements IOTPRepository
     }
     public function deleteOTP($token)
     {
-        return $otp = $this->otpModel::where('token', $token)->first();
+        $otp = $this->otpModel::where('token', $token)->first();
 
-        $otp->delete();
+        return $otp->delete();
     }
-    public function retrieveOTP(VerifyUserDTO $data)
+    public function retrieveOTP(object $data)
     {
 
-        $otp = $this->otpModel::where('token', $data->token)->first();
-
-        if ($otp) {
-            return $otp->delete();
-        }
+        return $this->otpModel::where('token', $data->token)->first();
 
     }
 }

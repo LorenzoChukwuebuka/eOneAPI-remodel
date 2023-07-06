@@ -2,18 +2,23 @@
 
 namespace App\Services\Admin;
 
+use App\Custom\MailSender;
 use App\DTO\Admin\AdminCreateVendorDTO;
 use App\DTO\Admin\AdminEditVendorDTO;
+use App\DTO\OTP\CreateOTPDTO;
 use App\Exceptions\CustomValidationException;
 use App\Interface\IRepository\Admin\IAdminVendorRepository;
 use App\Interface\IService\Admin\IAdminVendorService;
+use App\Interface\IService\IOTPService;
+use Illuminate\Support\Str;
 use Validator;
 
 class AdminVendorService implements IAdminVendorService
 {
-    public function __construct(private IAdminVendorRepository $adminVendorRepository)
+    public function __construct(private IAdminVendorRepository $adminVendorRepository, IOTPService $otpService)
     {
         $this->adminVendorRepository = $adminVendorRepository;
+        $this->otpService = $otpService;
     }
     public function createVendor(AdminCreateVendorDTO $data)
     {
@@ -36,8 +41,20 @@ class AdminVendorService implements IAdminVendorService
             throw new CustomValidationException($validator);
         }
 
-        return $this->adminVendorRepository->createVendor($data);
+        $token = Str::random(7);
+
+        $createVendor = $this->adminVendorRepository->createVendor($data);
+
+        $otpData = new CreateOTPDTO($createVendor->id, $token);
+
+        $this->otpService->createOtp($otpData);
+
+        MailSender::verifyVendorAccount($data->email, $token, $data->business_name);
+
+        return 'success';
     }
+
+    
     public function getSingleVendor($id)
     {
         $result = $this->adminVendorRepository->getSingleVendor($id);

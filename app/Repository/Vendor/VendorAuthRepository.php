@@ -5,8 +5,10 @@ namespace App\Repository\Vendor;
 use App\DTO\Vendor\VendorForgetPasswordDTO;
 use App\DTO\Vendor\VendorLoginDTO;
 use App\DTO\Vendor\VendorResetPasswordDTO;
+use App\DTO\Vendor\VerifyVendorDTO;
 use App\Interface\IRepository\Vendor\IVendorAuthRepository;
 use App\Models\Vendor;
+use Carbon\Carbon;
 
 class VendorAuthRepository implements IVendorAuthRepository
 {
@@ -42,6 +44,16 @@ class VendorAuthRepository implements IVendorAuthRepository
     }
     public function resetPassword(VendorResetPasswordDTO $data)
     {
+
+    }
+
+    public function verifyVendor(VerifyVendorDTO $data)
+    {
+        $vendor = $this->vendorModel->find($data->user_id);
+
+        $vendor->email_verified_at = Carbon::now();
+
+        return $vendor->save();
 
     }
 }

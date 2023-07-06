@@ -5,17 +5,21 @@ namespace App\Services\Vendor;
 use App\DTO\Vendor\VendorForgetPasswordDTO;
 use App\DTO\Vendor\VendorLoginDTO;
 use App\DTO\Vendor\VendorResetPasswordDTO;
+use App\DTO\Vendor\VerifyVendorDTO;
 use App\Exceptions\CustomValidationException;
 use App\Interface\IRepository\Vendor\IVendorAuthRepository;
+use App\Interface\IService\IOTPService;
 use App\Interface\IService\Vendor\IVendorAuthService;
 use Validator;
 
 class VendorAuthService implements IVendorAuthService
 {
 
-    public function __construct(IVendorAuthRepository $vendorRepository)
+    public function __construct(IVendorAuthRepository $vendorRepository, IOTPService $otpService)
     {
         $this->vendorRepository = $vendorRepository;
+        $this->otpService = $otpService;
+
     }
     public function login(VendorLoginDTO $data)
     {
@@ -29,6 +33,32 @@ class VendorAuthService implements IVendorAuthService
         }
 
         return $this->vendorRepository->login($data);
+
+    }
+
+    public function verifyVendor(VerifyVendorDTO $data)
+    {
+        $validator = Validator::make((array) $data, [
+            "token" => "required|exists:o_t_p_s",
+        ]);
+
+        if ($validator->fails()) {
+            throw new CustomValidationException($validator);
+        }
+
+        $otpFind = $this->otpService->retrieveOTP($data);
+
+        if ($otpFind == null) {
+            throw new \Exception("Wrong token provided");
+        }
+
+        #if found retrieve the user id and update the user row
+
+        $data->user_id = $otpFind->user_id;
+
+        $this->vendorRepository->verifyVendor($data);
+
+        return $this->otpService->deleteOTP($data->token);
 
     }
     public function changePassword()

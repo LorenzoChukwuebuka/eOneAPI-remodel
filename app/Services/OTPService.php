@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\DTO\Client\VerifyClientDTO;
 use App\DTO\OTP\CreateOTPDTO;
 use App\DTO\User\VerifyUserDTO;
+use App\DTO\Vendor\VerifyVendorDTO;
 use App\Interface\IRepository\IOTPRepository;
 use App\Interface\IService\IOTPService;
 
@@ -21,7 +23,7 @@ class OTPService implements IOTPService
     {
         return $this->otpRepository->deleteOTP($token);
     }
-    public function retrieveOTP(VerifyUserDTO $data)
+    public function retrieveOTP(object $data)
     {
         return $this->otpRepository->retrieveOTP($data);
     }

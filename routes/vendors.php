@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('vendor_restricted')->group(function () {
 
+    Route::post('verify-vendor',[VendordAuthController::class,'verifyVendor']);
+
     Route::post('vendor-login', [VendordAuthController::class, 'login']);
 
     Route::group(['middleware' => ['auth:vendor,vendor-api']], function () {

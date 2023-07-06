@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Vendor;
 
 use App\DTO\Vendor\VendorLoginDTO;
+use App\DTO\Vendor\VerifyVendorDTO;
 use App\Http\Controllers\Controller;
 use App\Interface\IService\Vendor\IVendorAuthService;
 use App\Traits\ApiResponse;
@@ -23,6 +24,19 @@ class VendordAuthController extends Controller
             $data = new VendorLoginDTO(...$request->except(['api_id', 'api_key']));
             $result = $this->vendorAuthService->login($data);
             return $this->success('vendor logged in successfully', $result, 200);
+        } catch (\Throwable $th) {
+            return $this->fail($th->getMessage());
+        }
+    }
+
+    public function verifyVendor(Request $request)
+    {
+        try {
+            $data = new VerifyVendorDTO(...$request->except(["api_id", "api_key"]));
+
+            $result = $this->vendorAuthService->verifyVendor($data);
+
+            return $this->success('account verified successfully', $result, 200);
         } catch (\Throwable $th) {
             return $this->fail($th->getMessage());
         }
