@@ -50,7 +50,8 @@ class ClientVendorController extends Controller
                 $fileUrl, // Pass the file URL to the constructor
                 $request->input('longitude'),
                 $request->input('latitude'),
-                $request->input('password')
+                $request->input('password'),
+                $request->input('username')
             );
 
             $result = $this->clientVendorService->createVendor($data);

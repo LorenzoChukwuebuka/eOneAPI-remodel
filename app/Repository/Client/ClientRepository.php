@@ -18,12 +18,16 @@ class ClientRepository implements IClientRepository
     {
         $client = $this->clientModel::where('email', $data->email)->first();
 
+        if (!$client) {
+            throw new \Exception("No record with this email found", 1);
+
+        }
         #compare passwords
 
-        $comparePasswords = \password_verify ($data->pin, $client->pin);
+        $comparePasswords = \password_verify($data->pin, $client->pin);
 
         if (!$comparePasswords) {
-            throw new \Exception ("Pin does not match", 1);
+            throw new \Exception("Pin does not match", 1);
         }
         $token = $client->createToken('myapptoken')->plainTextToken;
         return [

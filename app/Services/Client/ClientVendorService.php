@@ -2,19 +2,24 @@
 
 namespace App\Services\Client;
 
-use App\DTO\Vendor\CreateVendorDTO;
-use App\DTO\Vendor\EditVendorDTO;
-use App\Exceptions\CustomValidationException;
-use App\Interface\IRepository\Client\IClientVendorRepository;
-use App\Interface\IService\Client\IClientVendorService;
 use Validator;
+use App\Custom\MailSender;
+use Illuminate\Support\Str;
+use App\DTO\OTP\CreateOTPDTO;
+use App\DTO\Vendor\EditVendorDTO;
+use App\DTO\Vendor\CreateVendorDTO;
+use App\Interface\IService\IOTPService;
+use App\Exceptions\CustomValidationException;
+use App\Interface\IService\Client\IClientVendorService;
+use App\Interface\IRepository\Client\IClientVendorRepository;
 
 class ClientVendorService implements IClientVendorService
 {
 
-    public function __construct(IClientVendorRepository $clientVendorRepository)
+    public function __construct(IClientVendorRepository $clientVendorRepository,IOTPService $otpService)
     {
         $this->clientVendorRepository = $clientVendorRepository;
+        $this->otpService = $otpService;
     }
     public function createVendor(CreateVendorDTO $data)
     {
@@ -37,7 +42,17 @@ class ClientVendorService implements IClientVendorService
             throw new CustomValidationException($validator);
         }
 
-        return $this->clientVendorRepository->createVendor($data);
+        $token = Str::random(7);
+
+        $vendor = $this->clientVendorRepository->createVendor($data);
+
+        $otpData = new CreateOTPDTO($vendor->id, $token);
+
+        $this->otpService->createOtp($otpData);
+
+        MailSender::verifyVendorAccount($data->email, $token, $data->business_name);
+
+        return "success";
 
     }
 

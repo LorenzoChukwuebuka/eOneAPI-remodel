@@ -2,12 +2,12 @@
 
 namespace App\Services\Client;
 
-use Validator;
+use App\DTO\Client\ClientForgetPasswordDTO;
 use App\DTO\Client\ClientLoginDTO;
 use App\DTO\Client\ClientResetPasswordDTO;
-use App\DTO\Client\ClientForgetPasswordDTO;
-use App\Interface\IService\Client\IClientService;
 use App\Interface\IRepository\Client\IClientRepository;
+use App\Interface\IService\Client\IClientService;
+use Validator;
 
 class ClientService implements IClientService
 {
@@ -27,7 +27,10 @@ class ClientService implements IClientService
             throw new CustomValidationException($validator);
         }
 
-        return $this->clientRepository->loginClient($data);
+        $client = $this->clientRepository->loginClient($data);
+
+
+        return $client;
 
     }
 
@@ -46,8 +49,9 @@ class ClientService implements IClientService
         return $this->clientRepository->clientForgetPin($data);
     }
 
-    public function resetClientPin(ClientResetPasswordDTO $data){
-        
+    public function resetClientPin(ClientResetPasswordDTO $data)
+    {
+
     }
 
 }

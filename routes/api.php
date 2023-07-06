@@ -24,6 +24,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('user-login', [UserController::class, 'login']);
 Route::post('verify-user',[UserController::class,'verify_user']);
 
+
+
 require __DIR__ . '/admin.php';
 
 require __DIR__ . '/client.php';

@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreignId('vendor_id')->unsignedInteger()->index();
             $table->foreignId('card_type_id')->unsignedInteger()->index();
             $table->foreignId('account_type_id')->unsignedInteger()->index();
-            $table->double('interest_rate')->nullabe();
+            $table->double('interest_rate')->nullable();
             $table->integer('card_limit')->nullable();
             $table->integer('card_token')->nullable();
             $table->string('status')->default('active');
@@ -36,7 +36,7 @@ return new class extends Migration
                 "vendor_id" => 0,
                 "card_type_id" => 0,
                 "account_type_id" => 0,
-                "interest_rate" => 0,
+               "interest_rate" => 0,
                 "card_limit" => 0,
                 "card_token" => 0,
                 "status" => "inactive",

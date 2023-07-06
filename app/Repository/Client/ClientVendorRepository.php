@@ -29,6 +29,7 @@ class ClientVendorRepository implements IClientVendorRepository
             "longitude" => $data->longitude,
             "latitude" => $data->latitude,
             "password" => Hash::make($data->password),
+            "username" => $data->username,
         ]);
     }
 
