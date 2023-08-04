@@ -44,19 +44,11 @@ class CardController extends Controller
         }
     }
 
-    public function fund_cards()
-    {
-        try {
-            //code...
-        } catch (\Throwable $th) {
-            return $this->fail($th->getMessage());
-        }
-    }
-
     public function get_all_cards_for_a_particular_vendor()
     {
         try {
-            //code...
+         $result = $this->cardService->get_all_cards_for_a_particular_vendor();
+         return $this->success('card retrieved successfully', $result, 200);
         } catch (\Throwable $th) {
             return $this->fail($th->getMessage());
         }
@@ -80,6 +72,24 @@ class CardController extends Controller
         }
     }
 
-    
+    public function get_account_type()
+    {
+        try {
+            $result = $this->cardService->get_account_type();
+            return $this->success('accounttype retrived successfully', $result, 200);
+        } catch (\Throwable $th) {
+            return $this->fail($th->getMessage());
+        }
+    }
+
+    public function get_card_type()
+    {
+        try {
+            $result = $this->cardService->get_card_type();
+            return $this->success('cardtype retrived successfully', $result, 200);
+        } catch (\Throwable $th) {
+            return $this->fail($th->getMessage());
+        }
+    }
 
 }

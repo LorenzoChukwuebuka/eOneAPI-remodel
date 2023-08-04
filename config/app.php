@@ -185,7 +185,9 @@ return [
         App\Providers\OTPRepositoryProvider::class,
         App\Providers\OTPServiceProvider::class,
         App\Providers\CardRepositoryProvider::class,
-        App\Providers\CardServiceProvider::class
+        App\Providers\CardServiceProvider::class,
+        App\Providers\CardHistoryServiceProvider::class,
+        App\Providers\CardHistoryRepositoryProvider::class
 
     ])->toArray(),
 
