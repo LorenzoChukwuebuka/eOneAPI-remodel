@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Validator;
+use App\DTO\Admin\AdminCreateVendorDTO;
+use App\DTO\Admin\AdminEditVendorDTO;
+use App\Exceptions\CustomValidationException;
+use App\Http\Controllers\Controller;
+use App\Interface\IService\Admin\IAdminVendorService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\DTO\Admin\AdminEditVendorDTO;
-use App\DTO\Admin\AdminCreateVendorDTO;
-use App\Exceptions\CustomValidationException;
-use App\Interface\IService\Admin\IAdminVendorService;
+use Validator;
 
 class AdminVendorController extends Controller
 {
@@ -50,7 +50,8 @@ class AdminVendorController extends Controller
                 $fileUrl, // Pass the file URL to the constructor
                 $request->input('longitude'),
                 $request->input('latitude'),
-                $request->input('password')
+                $request->input('password'),
+                $request->input('username'),
             );
 
             $result = $this->adminVendorService->createVendor($data);

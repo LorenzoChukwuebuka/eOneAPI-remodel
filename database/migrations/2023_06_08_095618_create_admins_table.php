@@ -16,6 +16,7 @@ return new class extends Migration
             $table->increments('id');
             $table->string('firstname');
             $table->string('lastname');
+            $table->string('email');
             $table->string('password');
             $table->string('status')->default('active');
             $table->timestamp('email_verified_at')->nullable();
@@ -28,8 +29,9 @@ return new class extends Migration
             array(
                 "firstname" => "admin",
                 "lastname" => "admin123",
-                "password" => Hash::make("hello123")
-               
+                "email" => "admin@admin.com",
+                "password" => Hash::make("hello123"),
+
             )
         );
     }

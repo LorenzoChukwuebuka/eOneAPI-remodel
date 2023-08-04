@@ -32,7 +32,13 @@ class VendorAuthService implements IVendorAuthService
             throw new CustomValidationException($validator);
         }
 
-        return $this->vendorRepository->login($data);
+        $email_verified = $this->vendorRepository->login($data);
+
+        if ($email_verified["data"]["email_verified_at"] == null) {
+            throw new \Exception("vendor has not been verified");
+        }
+
+        return $email_verified;
 
     }
 

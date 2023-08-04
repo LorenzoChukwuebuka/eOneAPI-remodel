@@ -7,6 +7,12 @@ use App\Interface\IService\Card\ICardHistoryService;
 
 class CardHistoryService implements ICardHistoryService
 {
+    public function __construct(ICardHistoryService $cardHistoryService)
+    {
+        $this->cardHistoryService = $cardHistoryService;
+    }
     public function create_card_history(CreateCardHistoryDTO $data)
-    {}
+    {
+        return $this->cardHistoryService->create_card_history($data);
+    }
 }

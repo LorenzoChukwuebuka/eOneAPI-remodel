@@ -63,7 +63,7 @@ class CardController extends Controller
         }
     }
 
-    public function get_user_cards()
+    public function get_user_card_details()
     {
         try {
             //code...

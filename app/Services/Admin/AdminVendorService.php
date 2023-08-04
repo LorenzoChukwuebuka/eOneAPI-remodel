@@ -35,6 +35,7 @@ class AdminVendorService implements IAdminVendorService
             "latitude" => [],
             "password" => "required|min:6",
             "phone_number" => "required|min:11",
+            "username"=> "required|unique:vendors"
         ]);
 
         if ($validator->fails()) {

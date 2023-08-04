@@ -2,11 +2,11 @@
 
 namespace App\Repository\Admin;
 
+use App\DTO\Admin\AdminCreateVendorDTO;
+use App\DTO\Admin\AdminEditVendorDTO;
+use App\Interface\IRepository\Admin\IAdminVendorRepository;
 use App\Models\Vendor;
 use Illuminate\Support\Facades\Hash;
-use App\DTO\Admin\AdminEditVendorDTO;
-use App\DTO\Admin\AdminCreateVendorDTO;
-use App\Interface\IRepository\Admin\IAdminVendorRepository;
 
 class AdminVendorRepository implements IAdminVendorRepository
 {
@@ -29,6 +29,7 @@ class AdminVendorRepository implements IAdminVendorRepository
             "longitude" => $data->longitude,
             "latitude" => $data->latitude,
             "password" => Hash::make($data->password),
+            "username" => $data->username,
         ]);
     }
     public function getSingleVendor($id)
