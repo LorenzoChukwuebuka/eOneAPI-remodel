@@ -47,8 +47,8 @@ class CardController extends Controller
     public function get_all_cards_for_a_particular_vendor()
     {
         try {
-         $result = $this->cardService->get_all_cards_for_a_particular_vendor();
-         return $this->success('card retrieved successfully', $result, 200);
+            $result = $this->cardService->get_all_cards_for_a_particular_vendor();
+            return $this->success('card retrieved successfully', $result, 200);
         } catch (\Throwable $th) {
             return $this->fail($th->getMessage());
         }
@@ -63,10 +63,11 @@ class CardController extends Controller
         }
     }
 
-    public function get_user_card_details()
+    public function get_user_card_details($id)
     {
         try {
-            //code...
+            $result = $this->cardService->get_user_cards($id);
+            return $this->success('card retrieved successfully', $result, 200);
         } catch (\Throwable $th) {
             return $this->fail($th->getMessage());
         }

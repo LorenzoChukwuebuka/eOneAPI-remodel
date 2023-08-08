@@ -2,6 +2,7 @@
 
 namespace App\Services\Vendor;
 
+use App\Custom\MailSender;
 use App\DTO\Vendor\VendorForgetPasswordDTO;
 use App\DTO\Vendor\VendorLoginDTO;
 use App\DTO\Vendor\VendorResetPasswordDTO;
@@ -10,6 +11,7 @@ use App\Exceptions\CustomValidationException;
 use App\Interface\IRepository\Vendor\IVendorAuthRepository;
 use App\Interface\IService\IOTPService;
 use App\Interface\IService\Vendor\IVendorAuthService;
+use Illuminate\Support\Str;
 use Validator;
 
 class VendorAuthService implements IVendorAuthService
@@ -69,8 +71,29 @@ class VendorAuthService implements IVendorAuthService
     }
     public function changePassword()
     {}
+
     public function forgotPassword(VendorForgetPasswordDTO $data)
-    {}
+    {
+        $validator = Validator::make((array) $data, [
+            "email" => "email|required|exists:vendors",
+        ]);
+
+        if ($validator->fails()) {
+            throw new CustomValidationException($validator);
+        }
+
+        $token = Str::random(7);
+
+        $data->token = $token;
+
+        $repo = $this->vendorRepository->forgotPassword($data);
+
+        MailSender::vendorForgetPassword($data->email, $repo, $token);
+
+        return "email sent";
+    }
+
+
     public function resetPassword(VendorResetPasswordDTO $data)
     {}
 }

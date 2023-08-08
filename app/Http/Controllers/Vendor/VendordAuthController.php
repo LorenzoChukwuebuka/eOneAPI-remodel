@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Vendor;
 
+use App\DTO\Vendor\VendorForgetPasswordDTO;
 use App\DTO\Vendor\VendorLoginDTO;
 use App\DTO\Vendor\VerifyVendorDTO;
 use App\Http\Controllers\Controller;
@@ -42,10 +43,14 @@ class VendordAuthController extends Controller
         }
     }
 
-    public function forgetPassword()
+    public function forgetPassword(Request $request)
     {
         try {
-            //code...
+            $data = new VendorForgetPasswordDTO(...$request->except(['api_id', 'api_key']));
+
+            $result = $this->vendorAuthService->forgotPassword($data);
+            return $this->success('email successfully', $result, 200);
+
         } catch (\Throwable $th) {
             return $this->fail($th->getMessage());
         }

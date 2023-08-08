@@ -26,6 +26,15 @@ Route::post('verify-user',[UserController::class,'verify_user']);
 
 
 
+Route::group(['middleware' => ['auth:sanctum']], function () {
+   
+    
+
+
+});
+
+
+
 require __DIR__ . '/admin.php';
 
 require __DIR__ . '/client.php';

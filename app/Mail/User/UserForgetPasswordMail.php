@@ -27,7 +27,7 @@ class UserForgetPasswordMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'User Forget Password Mail',
+            subject: ' Forget Password Mail',
         );
     }
 

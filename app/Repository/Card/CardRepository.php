@@ -44,15 +44,25 @@ class CardRepository implements ICardRepository
 
     public function get_all_cards_for_a_particular_vendor($id)
     {
-        return $this->cardRepository::with('vendor', 'user')->where('vendor_id', $id)->latest()->get();
+        return $this->cardModel::with('vendor', 'user')->where('vendor_id', $id)->latest()->get();
     }
 
     public function edit_card_status()
     {}
 
-    public function get_user_cards()
+    public function get_user_cards($id = null)
     {
-        return $this->cardRepository::with('user', 'vendor')->where('id', auth()->user()->id)->latest()->get();
+
+        $authId = auth()->user()->id;
+
+        $result = $id !== null ? $id : $authId;
+
+        if ($id !== null) {
+            return $this->cardModel::with('user', 'vendor')->where('vendor_id', $result)->latest()->get();
+        } else {
+            return $this->cardModel::with('user', 'vendor')->where('user_id', $result)->latest()->get();
+        }
+
     }
 
     public function get_account_type()

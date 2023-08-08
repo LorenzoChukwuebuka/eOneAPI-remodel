@@ -18,7 +18,7 @@ interface ICardService
 
     public function edit_card_status();
 
-    public function get_user_cards();
+    public function get_user_cards($id);
 
     public function get_account_type();
 

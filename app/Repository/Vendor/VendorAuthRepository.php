@@ -9,6 +9,7 @@ use App\DTO\Vendor\VerifyVendorDTO;
 use App\Interface\IRepository\Vendor\IVendorAuthRepository;
 use App\Models\Vendor;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class VendorAuthRepository implements IVendorAuthRepository
 {
@@ -40,6 +41,16 @@ class VendorAuthRepository implements IVendorAuthRepository
     }
     public function forgotPassword(VendorForgetPasswordDTO $data)
     {
+        $getVendorName = $this->vendorModel->where('email', $data->email)->first();
+
+        //insert into password reset db
+        DB::table('password_resets')->insert([
+            'email' => $data->email,
+            'token' => $data->token,
+            'created_at' => Carbon::now(),
+        ]);
+
+        return $getVendorName->business_name;
 
     }
     public function resetPassword(VendorResetPasswordDTO $data)

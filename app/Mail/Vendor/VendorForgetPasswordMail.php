@@ -16,9 +16,11 @@ class VendorForgetPasswordMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct()
+
+     public $mailData;
+    public function __construct($mailData)
     {
-        //
+        $this->mailData = $mailData;
     }
 
     /**
@@ -27,7 +29,7 @@ class VendorForgetPasswordMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Vendor Forget Password Mail',
+            subject: 'Reset Password Mail',
         );
     }
 
@@ -37,7 +39,7 @@ class VendorForgetPasswordMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'mail.vendor.vendorforgetpassword',
         );
     }
 

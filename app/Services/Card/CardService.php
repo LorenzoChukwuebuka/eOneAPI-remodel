@@ -42,8 +42,6 @@ class CardService implements ICardService
 
         #send mail to user about card creation
 
-        
-
         return $this->cardRepository->create_card_for_users($data);
 
     }
@@ -60,11 +58,11 @@ class CardService implements ICardService
     public function get_all_cards_for_a_particular_vendor()
     {
         $id = auth()->user()->id;
+
         $result = $this->cardRepository->get_all_cards_for_a_particular_vendor($id);
 
         if ($result->count() == 0) {
             throw new \Exception("No records found");
-
         }
 
         return $result;
@@ -73,9 +71,9 @@ class CardService implements ICardService
     public function edit_card_status()
     {}
 
-    public function get_user_cards()
+    public function get_user_cards($id = null)
     {
-        $card = $this->cardRepository->get_user_cards();
+        $card = $this->cardRepository->get_user_cards($id);
 
         if (!$card) {
             throw new \Exception("No card found");

@@ -27,7 +27,7 @@ class VendorVerifyAccountMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Vendor Verify Account Mail',
+            subject: 'Verify Account Mail',
         );
     }
 
