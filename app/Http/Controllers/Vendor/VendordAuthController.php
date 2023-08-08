@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Vendor;
 
-use App\DTO\Vendor\VendorForgetPasswordDTO;
+use App\Traits\ApiResponse;
+use Illuminate\Http\Request;
 use App\DTO\Vendor\VendorLoginDTO;
 use App\DTO\Vendor\VerifyVendorDTO;
 use App\Http\Controllers\Controller;
+use App\DTO\Vendor\VendorResetPasswordDTO;
+use App\DTO\Vendor\VendorForgetPasswordDTO;
 use App\Interface\IService\Vendor\IVendorAuthService;
-use App\Traits\ApiResponse;
-use Illuminate\Http\Request;
 
 class VendordAuthController extends Controller
 {
@@ -56,10 +57,12 @@ class VendordAuthController extends Controller
         }
     }
 
-    public function resetPassword()
+    public function resetPassword(Request $request)
     {
         try {
-            //code...
+            $data = new VendorResetPasswordDTO(...$request->except(['api_id', 'api_key']));
+            $result = $this->vendorAuthService->resetPassword($data);
+            return $this->success('password reset successful', $result, 200);
         } catch (\Throwable $th) {
             return $this->fail($th->getMessage());
         }

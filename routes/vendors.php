@@ -11,6 +11,7 @@ Route::prefix('vendor_restricted')->group(function () {
     Route::get('get-account-type', [CardController::class, 'get_account_type']);
     Route::get('get-card-type', [CardController::class, 'get_card_type']);
     Route::post('vendor-forget-password', [VendordAuthController::class, 'forgetPassword']);
+    Route::post('vendor-reset-password', [VendordAuthController::class, 'resetPassword']);
 
     Route::group(['middleware' => ['auth:vendor,vendor-api']], function () {
         Route::controller(CardController::class)->group(function () {

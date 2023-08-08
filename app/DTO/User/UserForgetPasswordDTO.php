@@ -4,6 +4,6 @@ namespace App\DTO\User;
 
 class UserForgetPasswordDTO
 {
-    public function __construct(public string $username)
+    public function __construct(public string $email)
     {}
 }

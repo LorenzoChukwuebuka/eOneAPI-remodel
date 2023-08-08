@@ -2,17 +2,17 @@
 
 namespace App\Repository\User;
 
-use Carbon\Carbon;
-use App\Models\User;
-use App\DTO\User\EditUserDTO;
-use App\DTO\User\UserLoginDTO;
 use App\DTO\User\CreateUserDTO;
+use App\DTO\User\EditUserDTO;
 use App\DTO\User\SearchUserDTO;
-use App\DTO\User\VerifyUserDTO;
-use Illuminate\Support\Facades\Hash;
-use App\DTO\User\UserResetPasswordDTO;
 use App\DTO\User\UserForgetPasswordDTO;
+use App\DTO\User\UserLoginDTO;
+use App\DTO\User\UserResetPasswordDTO;
+use App\DTO\User\VerifyUserDTO;
 use App\Interface\IRepository\User\IUserRepository;
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 
 class UserRepository implements IUserRepository
 {
@@ -71,7 +71,16 @@ class UserRepository implements IUserRepository
     }
 
     public function forgetPassword(UserForgetPasswordDTO $data)
-    {}
+    {
+
+        //insert into password reset db
+        return DB::table('password_resets')->insert([
+            'email' => $data->email,
+            'token' => $data->token,
+            'created_at' => Carbon::now(),
+        ]);
+
+    }
 
     public function resetPassword(UserResetPasswordDTO $data)
     {}
@@ -103,11 +112,11 @@ class UserRepository implements IUserRepository
 
     public function verify_user(VerifyUserDTO $data)
     {
-       $user =  $this->userModel->find($data->user_id);
+        $user = $this->userModel->find($data->user_id);
 
-       $user->email_verified_at = Carbon::now();
+        $user->email_verified_at = Carbon::now();
 
-       return $user->save();
+        return $user->save();
 
     }
 

@@ -2,17 +2,18 @@
 
 namespace App\Services\Vendor;
 
-use App\Custom\MailSender;
-use App\DTO\Vendor\VendorForgetPasswordDTO;
-use App\DTO\Vendor\VendorLoginDTO;
-use App\DTO\Vendor\VendorResetPasswordDTO;
-use App\DTO\Vendor\VerifyVendorDTO;
-use App\Exceptions\CustomValidationException;
-use App\Interface\IRepository\Vendor\IVendorAuthRepository;
-use App\Interface\IService\IOTPService;
-use App\Interface\IService\Vendor\IVendorAuthService;
-use Illuminate\Support\Str;
 use Validator;
+use App\Custom\MailSender;
+use Illuminate\Support\Str;
+use App\DTO\Vendor\VendorLoginDTO;
+use Illuminate\Support\Facades\DB;
+use App\DTO\Vendor\VerifyVendorDTO;
+use App\Interface\IService\IOTPService;
+use App\DTO\Vendor\VendorResetPasswordDTO;
+use App\DTO\Vendor\VendorForgetPasswordDTO;
+use App\Exceptions\CustomValidationException;
+use App\Interface\IService\Vendor\IVendorAuthService;
+use App\Interface\IRepository\Vendor\IVendorAuthRepository;
 
 class VendorAuthService implements IVendorAuthService
 {
@@ -93,7 +94,19 @@ class VendorAuthService implements IVendorAuthService
         return "email sent";
     }
 
-
     public function resetPassword(VendorResetPasswordDTO $data)
-    {}
+    {
+        $validator = Validator::make((array) $data, [
+            "password" => "required",
+            "otp" => "required",
+        ]);
+
+        if ($validator->fails()) {
+            throw new CustomValidationException($validator);
+        }
+
+        return $this->vendorRepository->resetPassword($data);
+
+       
+    }
 }

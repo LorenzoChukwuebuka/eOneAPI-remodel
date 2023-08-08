@@ -10,6 +10,7 @@ use App\Interface\IRepository\Vendor\IVendorAuthRepository;
 use App\Models\Vendor;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class VendorAuthRepository implements IVendorAuthRepository
 {
@@ -55,6 +56,24 @@ class VendorAuthRepository implements IVendorAuthRepository
     }
     public function resetPassword(VendorResetPasswordDTO $data)
     {
+        $selectedRows = DB::table('password_resets')
+            ->select('email')
+            ->where('token', '=', $data->otp)
+            ->get();
+
+        if ($selectedRows->count() == 0) {
+            throw new \Exception("Invalid OTP");
+        }
+
+        //   $selectedRows[0]->email;
+        $vendId = $this->vendorModel::where('email', $selectedRows[0]->email)->first();
+
+        #update the password
+        $vendId->update([
+            'password' => Hash::make($data->password),
+        ]);
+        #delete the token
+        return DB::statement("DELETE FROM password_resets WHERE email = ? AND token = ? ", [$selectedRows[0]->email, $data->otp]);
 
     }
 
