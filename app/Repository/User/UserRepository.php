@@ -2,18 +2,18 @@
 
 namespace App\Repository\User;
 
-use Carbon\Carbon;
-use App\Models\User;
-use App\DTO\User\EditUserDTO;
-use App\DTO\User\UserLoginDTO;
 use App\DTO\User\CreateUserDTO;
+use App\DTO\User\EditUserDTO;
 use App\DTO\User\SearchUserDTO;
+use App\DTO\User\UserForgetPasswordDTO;
+use App\DTO\User\UserLoginDTO;
+use App\DTO\User\UserResetPasswordDTO;
 use App\DTO\User\VerifyUserDTO;
+use App\Interface\IRepository\User\IUserRepository;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use App\DTO\User\UserResetPasswordDTO;
-use App\DTO\User\UserForgetPasswordDTO;
-use App\Interface\IRepository\User\IUserRepository;
 
 class UserRepository implements IUserRepository
 {
@@ -86,7 +86,26 @@ class UserRepository implements IUserRepository
     }
 
     public function resetPassword(UserResetPasswordDTO $data)
-    {}
+    {
+        $selectedRows = DB::table('password_resets')
+            ->select('email')
+            ->where('token', '=', $data->otp)
+            ->get();
+
+        if ($selectedRows->count() == 0) {
+            throw new \Exception("Invalid OTP");
+        }
+
+        //   $selectedRows[0]->email;
+        $userId = $this->userModel::where('email', $selectedRows[0]->email)->first();
+
+        #update the password
+        $userId->update([
+            'password' => Hash::make($data->password),
+        ]);
+        #delete the token
+        return DB::statement("DELETE FROM password_resets WHERE email = ? AND token = ? ", [$selectedRows[0]->email, $data->otp]);
+    }
 
     public function login(UserLoginDTO $data)
     {

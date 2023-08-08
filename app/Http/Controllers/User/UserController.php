@@ -7,6 +7,7 @@ use App\DTO\User\EditUserDTO;
 use App\DTO\User\SearchUserDTO;
 use App\DTO\User\UserForgetPasswordDTO;
 use App\DTO\User\UserLoginDTO;
+use App\DTO\User\UserResetPasswordDTO;
 use App\DTO\User\VerifyUserDTO;
 use App\Http\Controllers\Controller;
 use App\Interface\IService\User\IUserService;
@@ -91,7 +92,7 @@ class UserController extends Controller
         try {
             $data = new UserForgetPasswordDTO(...$request->except(['api_id', 'api_key']));
             $result = $this->userService->forgetPassword($data);
-            return $this->success('email sent successfully',$result, 200);
+            return $this->success('email sent successfully', $result, 200);
         } catch (\Throwable $th) {
             return $this->fail($th->getMessage());
         }
@@ -111,7 +112,9 @@ class UserController extends Controller
     public function resetPassword(Request $request)
     {
         try {
-            //code...
+            $data = new UserResetPasswordDTO(...$request->except(['api_id', 'api_key']));
+            $result = $this->userService->resetPassword($data);
+            return $this->success('password reset successful', $result, 200);
         } catch (\Throwable $th) {
             return $this->fail($th->getMessage());
         }

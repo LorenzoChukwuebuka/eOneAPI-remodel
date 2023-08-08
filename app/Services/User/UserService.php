@@ -128,7 +128,19 @@ class UserService implements IUserService
     }
 
     public function resetPassword(UserResetPasswordDTO $data)
-    {}
+    {
+        $validator = Validator::make((array) $data, [
+            "password" => "required",
+            "otp" => "required",
+        ]);
+
+        if ($validator->fails()) {
+            throw new CustomValidationException($validator);
+        }
+
+        return $this->userRepository->resetPassword($data);
+
+    }
 
     public function login(UserLoginDTO $data)
     {
