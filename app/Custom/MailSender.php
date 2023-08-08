@@ -4,6 +4,7 @@ declare (strict_types = 1);
 
 namespace App\Custom;
 
+use App\Mail\User\UserForgetPasswordMail;
 use App\Mail\User\UserVerifyAccountMail;
 use App\Mail\Vendor\VendorForgetPasswordMail;
 use App\Mail\Vendor\VendorVerifyAccountMail;
@@ -17,9 +18,10 @@ class MailSender
         Mail::to($email)->send(new UserVerifyAccountMail($mailData));
     }
 
-    public static function userForgetPassword(string $email, string | int $otp)
+    public static function userForgetPassword(string $email, string $username, string | int $otp)
     {
-
+        $mailData = ['token' => $otp, 'username' => $username];
+        Mail::to($email)->send(new UserForgetPasswordMail($mailData));
     }
 
     public static function verifyVendorAccount(string $email, string | int $otp, string $businessname)

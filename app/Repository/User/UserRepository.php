@@ -2,17 +2,18 @@
 
 namespace App\Repository\User;
 
-use App\DTO\User\CreateUserDTO;
-use App\DTO\User\EditUserDTO;
-use App\DTO\User\SearchUserDTO;
-use App\DTO\User\UserForgetPasswordDTO;
-use App\DTO\User\UserLoginDTO;
-use App\DTO\User\UserResetPasswordDTO;
-use App\DTO\User\VerifyUserDTO;
-use App\Interface\IRepository\User\IUserRepository;
-use App\Models\User;
 use Carbon\Carbon;
+use App\Models\User;
+use App\DTO\User\EditUserDTO;
+use App\DTO\User\UserLoginDTO;
+use App\DTO\User\CreateUserDTO;
+use App\DTO\User\SearchUserDTO;
+use App\DTO\User\VerifyUserDTO;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use App\DTO\User\UserResetPasswordDTO;
+use App\DTO\User\UserForgetPasswordDTO;
+use App\Interface\IRepository\User\IUserRepository;
 
 class UserRepository implements IUserRepository
 {
@@ -72,14 +73,16 @@ class UserRepository implements IUserRepository
 
     public function forgetPassword(UserForgetPasswordDTO $data)
     {
+        $getUserName = $this->userModel->where('email', $data->email)->first();
 
         //insert into password reset db
-        return DB::table('password_resets')->insert([
+        DB::table('password_resets')->insert([
             'email' => $data->email,
             'token' => $data->token,
             'created_at' => Carbon::now(),
         ]);
 
+        return $getUserName->username;
     }
 
     public function resetPassword(UserResetPasswordDTO $data)

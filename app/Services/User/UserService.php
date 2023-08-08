@@ -108,7 +108,23 @@ class UserService implements IUserService
 
     public function forgetPassword(UserForgetPasswordDTO $data)
     {
+        $validator = Validator::make((array) $data, [
+            "email" => "email|required|exists:users",
+        ]);
 
+        if ($validator->fails()) {
+            throw new CustomValidationException($validator);
+        }
+
+        $token = Str::random(7);
+
+        $data->token = $token;
+
+        $repo = $this->userRepository->forgetPassword($data);
+
+        MailSender::userForgetPassword($data->email, $repo, $token);
+
+        return "email sent";
     }
 
     public function resetPassword(UserResetPasswordDTO $data)

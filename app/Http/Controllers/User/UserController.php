@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\DTO\User\CreateUserDTO;
 use App\DTO\User\EditUserDTO;
 use App\DTO\User\SearchUserDTO;
+use App\DTO\User\UserForgetPasswordDTO;
 use App\DTO\User\UserLoginDTO;
 use App\DTO\User\VerifyUserDTO;
 use App\Http\Controllers\Controller;
@@ -88,7 +89,9 @@ class UserController extends Controller
     public function forgetPassword(Request $request)
     {
         try {
-            //code...
+            $data = new UserForgetPasswordDTO(...$request->except(['api_id', 'api_key']));
+            $result = $this->userService->forgetPassword($data);
+            return $this->success('email sent successfully',$result, 200);
         } catch (\Throwable $th) {
             return $this->fail($th->getMessage());
         }
@@ -98,9 +101,7 @@ class UserController extends Controller
     {
         try {
             $data = new VerifyUserDTO(...$request->except(['api_id', 'api_key']));
-
             $result = $this->userService->verify_user($data);
-
             return $this->success('user verified successfully', $result, 200);
         } catch (\Throwable $th) {
             return $this->fail($th->getMessage());
