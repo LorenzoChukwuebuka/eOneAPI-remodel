@@ -187,7 +187,9 @@ return [
         App\Providers\CardRepositoryProvider::class,
         App\Providers\CardServiceProvider::class,
         App\Providers\CardHistoryServiceProvider::class,
-        App\Providers\CardHistoryRepositoryProvider::class
+        App\Providers\CardHistoryRepositoryProvider::class,
+        App\Providers\PaymentServiceProvider::class,
+        App\Providers\PaymentRepositoryProvider::class,
 
     ])->toArray(),
 

@@ -17,6 +17,7 @@ class OTPRepository implements IOTPRepository
         return $this->otpModel::create([
             'token' => $data->token,
             "user_id" => $data->user_id,
+            "card_id" => $data->card_id ?? null,
         ]);
     }
     public function deleteOTP($token)
