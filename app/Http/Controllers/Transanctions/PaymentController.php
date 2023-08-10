@@ -30,7 +30,8 @@ class PaymentController extends Controller
     public function verify_payment($reference)
     {
         try {
-            //code...
+            $result = $this->paymentService->verify_payment($reference);
+            return $this->success('payment initialized successfully', $result, 200);
         } catch (\Throwable $th) {
             return $this->fail($th->getMessage());
         }

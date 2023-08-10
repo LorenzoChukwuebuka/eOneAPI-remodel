@@ -1,9 +1,9 @@
 <?php
 
+use App\Http\Controllers\Transanctions\PaymentController;
+use App\Http\Controllers\User\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\User\UserController;
-use App\Http\Controllers\Transanctions\PaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +31,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::controller(PaymentController::class)->group(function () {
         Route::post('initialize-payment', 'initialize_payment');
+        Route::get('verify-payment/{reference}', 'verify_payment');
     });
 
 });

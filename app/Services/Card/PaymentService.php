@@ -8,6 +8,8 @@ use Validator;
 
 class PaymentService implements IPaymentService
 {
+
+    
     public function initialize_payment(array $data)
     {
         $data['user_id'] = auth()->user()->id;
@@ -60,8 +62,40 @@ class PaymentService implements IPaymentService
         return $res;
 
     }
-    public function verify_payment()
-    {}
+    public function verify_payment(string $reference)
+    {
+        $key = config('paystack.paystack_secret');
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => "https://api.paystack.co/transaction/verify/" . rawurlencode($reference),
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_HTTPHEADER => array(
+                "Authorization: Bearer {$key}",
+                "Cache-Control: no-cache",
+            ),
+        ));
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+        curl_close($curl);
+
+        if ($err) {
+            return response(["code" => 3, "error" => "cURL Error :" . $err]);
+        }
+
+        $result = json_decode($response);
+
+        if ($result->data->status !== 'success') {
+            throw new \Exception("Transaction failed");
+        }
+    }
     public function credit_user_account()
     {}
     public function debit_user_account()
