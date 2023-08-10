@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Card;
+namespace App\Http\Controllers\Transanctions;
 
 use App\Http\Controllers\Controller;
 use App\Interface\IService\Card\IPaymentService;
@@ -19,7 +19,8 @@ class PaymentController extends Controller
     public function initialize_payment(Request $request)
     {
         try {
-            $result = $this->paymentService->initialize_payment(...$request->except(['api_id', 'api_key']));
+            $data = $request->except(['api_id', 'api_key']);
+            $result = $this->paymentService->initialize_payment($data);
             return $this->success('payment initialized successfully', $result, 200);
         } catch (\Throwable $th) {
             return $this->fail($th->getMessage());

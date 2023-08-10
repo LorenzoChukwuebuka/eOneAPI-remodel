@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\Transanctions\PaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,20 +23,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 /*Route::group(['middleware' => ApiMiddleware::class], function () { */
 
 Route::post('user-login', [UserController::class, 'login']);
-Route::post('verify-user',[UserController::class,'verify_user']);
-Route::post('forget-password',[UserController::class,'forgetPassword']);
-Route::post('reset-password',[UserController::class,'resetPassword']);
-
-
+Route::post('verify-user', [UserController::class, 'verify_user']);
+Route::post('forget-password', [UserController::class, 'forgetPassword']);
+Route::post('reset-password', [UserController::class, 'resetPassword']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
-   
-    
 
+    Route::controller(PaymentController::class)->group(function () {
+        Route::post('initialize-payment', 'initialize_payment');
+    });
 
 });
-
-
 
 require __DIR__ . '/admin.php';
 

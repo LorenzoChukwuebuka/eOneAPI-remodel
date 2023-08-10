@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Services\Card\PaymentService;
 use Illuminate\Support\ServiceProvider;
+use App\Interface\IService\Card\IPaymentService;
 
 class PaymentServiceProvider extends ServiceProvider
 {
@@ -11,7 +13,7 @@ class PaymentServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(IPaymentService::class,PaymentService::class);
     }
 
     /**
