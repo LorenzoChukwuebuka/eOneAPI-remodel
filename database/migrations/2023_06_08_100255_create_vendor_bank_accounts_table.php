@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('account_name');
             $table->integer('account_number');
             $table->string('bank_name');
+            $table->string('bank_code');
             $table->string('default_account')->default('yes');
             $table->string('status')->default('active');
             $table->timestamps();
