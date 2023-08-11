@@ -2,9 +2,9 @@
 
 namespace App\Repository;
 
+use App\Models\OTP;
 use App\DTO\OTP\CreateOTPDTO;
 use App\Interface\IRepository\IOTPRepository;
-use App\Models\OTP;
 
 class OTPRepository implements IOTPRepository
 {

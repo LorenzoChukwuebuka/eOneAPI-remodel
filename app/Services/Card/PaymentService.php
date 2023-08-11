@@ -9,7 +9,6 @@ use Validator;
 class PaymentService implements IPaymentService
 {
 
-    
     public function initialize_payment(array $data)
     {
         $data['user_id'] = auth()->user()->id;
@@ -57,6 +56,8 @@ class PaymentService implements IPaymentService
 
         #execute post
         $result = curl_exec($ch);
+        $err = curl_error($curl);
+        curl_close($curl);
         $res = json_decode($result);
 
         return $res;
@@ -87,7 +88,8 @@ class PaymentService implements IPaymentService
         curl_close($curl);
 
         if ($err) {
-            return response(["code" => 3, "error" => "cURL Error :" . $err]);
+            throw new \Exception("Curl Error: {$err}");
+
         }
 
         $result = json_decode($response);

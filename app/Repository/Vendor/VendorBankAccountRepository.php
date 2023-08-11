@@ -2,6 +2,7 @@
 
 namespace App\Repository\Vendor;
 
+use App\DTO\Vendor\CreateVendorBankAccountDTO;
 use App\Interface\IRepository\Vendor\IVendorBankAccountRepository;
 
 class VendorBankAccountRepository implements IVendorBankAccountRepository

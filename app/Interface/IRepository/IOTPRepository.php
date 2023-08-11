@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Interface\IRepository\Loyalty;
+namespace App\Interface\IRepository;
 
 use App\DTO\OTP\CreateOTPDTO;
 

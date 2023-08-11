@@ -190,6 +190,8 @@ return [
         App\Providers\CardHistoryRepositoryProvider::class,
         App\Providers\PaymentServiceProvider::class,
         App\Providers\PaymentRepositoryProvider::class,
+        App\Providers\VendorBankAccountRepositoryProvider::class,
+        App\Providers\VendorBankAccountServiceProvider::class,
 
     ])->toArray(),
 

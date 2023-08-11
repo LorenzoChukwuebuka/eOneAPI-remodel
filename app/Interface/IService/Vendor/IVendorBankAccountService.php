@@ -12,4 +12,5 @@ interface IVendorBankAccountService
     public function list_accounts();
     public function list_accounts_for_a_vendor();
     public function get_account_by_id($id);
+    public function resolve_account_number($account_number,$bank_code);
 }
