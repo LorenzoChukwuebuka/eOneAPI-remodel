@@ -6,6 +6,8 @@ use App\DTO\Card\CreateUserCardDTO;
 use App\Exceptions\CustomValidationException;
 use App\Interface\IRepository\Card\ICardRepository;
 use App\Interface\IService\Card\ICardService;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Validator;
 
 class CardService implements ICardService
@@ -30,19 +32,39 @@ class CardService implements ICardService
             throw new CustomValidationException($validator);
         }
 
-        $last_card_number = $this->cardRepository->get_last_card();
+        return DB::transaction(function () use ($data) {
+            $genCardNum = $this->generateVirtualCardNumber();
 
-        $data->card_number = (int) $last_card_number['card_number'] + 1;
+            $check_if_card_exists = $this->cardRepository->check_if_generated_number_exists($genCardNum);
 
-        #call the expire function
-        $today = date("F j, Y, g:i a");
-        $expiryDate = self::expiry_date($today);
+            if ($check_if_card_exists !== null) {
 
-        $data->expiry_date = $expiryDate;
+                #Generate a new card number until a unique one is found
+                do {
+                    $genCardNum = $this->generateVirtualCardNumber();
+                    $check_if_card_exists = $this->cardRepository->check_if_generated_number_exists($genCardNum);
+                } while ($check_if_card_exists);
 
-        #send mail to user about card creation
+            }
 
-        return $this->cardRepository->create_card_for_users($data);
+            $encryptedCardNumb = Crypt::encrypt($genCardNum);
+
+            $data->card_number = $encryptedCardNumb;
+
+            #call the expire function
+            $today = date("F j, Y, g:i a");
+            $expiryDate = self::expiry_date($today);
+
+            $data->expiry_date = $expiryDate;
+
+            #send mail to user about card creation
+            /**
+             * get the email or phone number of user from their
+             */
+
+            return $this->cardRepository->create_card_for_users($data);
+
+        });
 
     }
 
@@ -98,5 +120,47 @@ class CardService implements ICardService
         $date = date_create($today);
         date_add($date, date_interval_create_from_date_string("3 years"));
         return date_format($date, "Y-m-d");
+    }
+
+    private function generateRandomNumbers($length)
+    {
+        $numbers = '';
+        for ($i = 0; $i < $length; $i++) {
+            $numbers .= mt_rand(0, 9); // Generate a random digit
+        }
+        return $numbers;
+    }
+
+    private function calculateLuhnChecksum($number)
+    {
+        $sum = 0;
+        $numDigits = strlen($number);
+        $parity = $numDigits % 2;
+
+        for ($i = $numDigits - 1; $i >= 0; $i--) {
+            $digit = intval($number[$i]);
+
+            if ($i % 2 == $parity) {
+                $digit *= 2;
+                if ($digit > 9) {
+                    $digit -= 9;
+                }
+            }
+
+            $sum += $digit;
+        }
+
+        $checksumDigit = (10 - ($sum % 10)) % 10;
+        return $checksumDigit;
+    }
+
+    private function generateVirtualCardNumber($length = 16)
+    {
+        $bin = "453245"; // Issuer Identifier (BIN)
+        $accountIdentifier = $this->generateRandomNumbers($length - strlen($bin) - 1); // Subtract 1 for the checksum
+        $cardNumber = $bin . $accountIdentifier;
+        $checksum = $this->calculateLuhnChecksum($cardNumber);
+
+        return $cardNumber . $checksum;
     }
 }

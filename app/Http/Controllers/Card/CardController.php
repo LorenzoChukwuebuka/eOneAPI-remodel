@@ -22,7 +22,7 @@ class CardController extends Controller
             $result = $this->cardService->create_card_for_users($data);
             return $this->success('card created successfully', $result, 200);
         } catch (\Throwable $th) {
-            return $this->fail($th->getMessage());
+            return $this->fail([$th->getMessage(),$th->getLine(),$th->getFile()]);
         }
     }
 

@@ -25,4 +25,6 @@ interface ICardRepository
     public function get_card_type();
 
     public function get_last_card();
+
+    public function check_if_generated_number_exists($num);
 }

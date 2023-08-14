@@ -14,6 +14,7 @@ Route::prefix('vendor_restricted')->group(function () {
     Route::post('vendor-forget-password', [VendordAuthController::class, 'forgetPassword']);
     Route::post('vendor-reset-password', [VendordAuthController::class, 'resetPassword']);
     Route::get('list-banks', [VendorBankController::class, 'list_banks']);
+    //  Route::get('list-accounts', [VendorBankController::class, 'list_all_accounts']);
 
     Route::group(['middleware' => ['auth:vendor,vendor-api']], function () {
         Route::controller(CardController::class)->group(function () {
@@ -25,6 +26,10 @@ Route::prefix('vendor_restricted')->group(function () {
         Route::controller(VendorBankController::class)->group(function () {
             Route::get('resolve-account-number', 'resolve_bank_details');
             Route::post('create-bank-details', 'create_bank_account');
+            Route::delete('delete-bank-details/{id}', 'delete_bank_account');
+            Route::get('find-account-by-id/{id}', 'get_account_by_id');
+            Route::get('get-vendor-accounts', 'list_all_accounts_for_a_particular_vendor');
+
         });
     });
 

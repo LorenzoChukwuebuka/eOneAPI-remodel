@@ -50,10 +50,11 @@ class VendorBankAccountService implements IVendorBankAccountService
     public function create_bank_account(CreateVendorBankAccountDTO $data)
     {
         $validator = Validator::make((array) $data, [
-            'account_number' => 'required',
+            'account_number' => 'required|unique:vendor_bank_accounts',
             'vendor_id' => 'required',
             'default_account' => 'required',
             'bank_code' => 'required',
+
         ]);
 
         if ($validator->fails()) {
@@ -64,18 +65,45 @@ class VendorBankAccountService implements IVendorBankAccountService
 
         $data->account_name = $account_name->data->account_name;
 
-
-        return $data;
+        return $this->vendorBankAccountRepository->create_bank_account($data);
 
     }
-    public function delete_account()
-    {}
+    public function delete_account($id)
+    {
+        return $this->vendorBankAccountRepository->delete_account($id);
+    }
     public function list_accounts()
-    {}
+    {
+        $result = $this->vendorBankAccountRepository->list_accounts();
+
+        if ($result->count() == 0) {
+            throw new \Exception("No record found");
+        }
+
+        return $result;
+
+    }
     public function list_accounts_for_a_vendor()
-    {}
+    {
+        $result = $this->vendorBankAccountRepository->list_accounts_for_a_vendor();
+
+        if ($result->count() == 0) {
+            throw new \Exception("No record found");
+        }
+
+        return $result;
+    }
     public function get_account_by_id($id)
-    {}
+    {
+        $result = $this->vendorBankAccountRepository->get_account_by_id($id);
+
+        if ($result == null) {
+            throw new \Error("No record found");
+
+        }
+
+        return $result;
+    }
 
     public function resolve_account_number($account_number, $bank_code)
     {

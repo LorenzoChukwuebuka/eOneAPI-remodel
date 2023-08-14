@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('vendor_bank_accounts', function (Blueprint $table) {
+        Schema::create('wallets', function (Blueprint $table) {
             $table->increments('id');
-            $table->foreignId('vendor_id')->unsignedInteger();
-            $table->string('account_name');
-            $table->BigInteger('account_number');
-            $table->string('bank_name');
-            $table->string('bank_code');
-            $table->string('default_account')->default('yes');
+            $table->unsignedBigInteger('user_id');
+            $table->string('available_balance')->default(0);
+            $table->string('pending_balance')->default(0);
             $table->string('status')->default('active');
             $table->timestamps();
         });
@@ -29,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('vendor_bank_accounts');
+        Schema::dropIfExists('wallets');
     }
 };

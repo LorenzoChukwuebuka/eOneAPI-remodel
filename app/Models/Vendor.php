@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use App\Models\User;
 use App\Models\Client;
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Notifications\Notifiable;
+use App\Models\User;
+use App\Models\VendorBankAccount;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class Vendor extends Authenticatable
 {
@@ -27,5 +28,10 @@ class Vendor extends Authenticatable
     public function client()
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public function vendorAccount()
+    {
+        return $this->hasMany(VendorBankAccount::class);
     }
 }

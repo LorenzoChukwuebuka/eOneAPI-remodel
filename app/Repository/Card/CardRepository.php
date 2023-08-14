@@ -7,6 +7,7 @@ use App\Interface\IRepository\Card\ICardRepository;
 use App\Models\AccountType;
 use App\Models\Card;
 use App\Models\CardType;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 
 class CardRepository implements ICardRepository
@@ -60,7 +61,13 @@ class CardRepository implements ICardRepository
         if ($id !== null) {
             return $this->cardModel::with('user', 'vendor')->where('vendor_id', $result)->latest()->get();
         } else {
-            return $this->cardModel::with('user', 'vendor')->where('user_id', $result)->latest()->get();
+            $userCards = $this->cardModel::with('user', 'vendor')->where('user_id', $result)->latest()->get();
+            // Decrypt card numbers
+            foreach ($cards as $card) {
+                $userCards->card_number = Crypt::decrypt($userCards->card_number);
+            }
+
+            return $userCards;
         }
 
     }
@@ -73,6 +80,11 @@ class CardRepository implements ICardRepository
     public function get_card_type()
     {
         return $this->cardTypeModel::latest()->get();
+    }
+
+    public function check_if_generated_number_exists($num)
+    {
+        return $this->cardModel::where('card_number', $num)->first();
     }
 
     public function get_last_card()
