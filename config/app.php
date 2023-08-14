@@ -192,6 +192,7 @@ return [
         App\Providers\PaymentRepositoryProvider::class,
         App\Providers\VendorBankAccountRepositoryProvider::class,
         App\Providers\VendorBankAccountServiceProvider::class,
+        App\Providers\CardTransactionRepositoryProvider::class
 
     ])->toArray(),
 

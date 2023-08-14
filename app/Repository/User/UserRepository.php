@@ -145,9 +145,9 @@ class UserRepository implements IUserRepository
 
     public function createUpdateTransactionPin(CreateUpdateTransactionPinDTO $data)
     {
-        return $this->userModel::updateOrCreate(['user_id' => auth()->user->id],
+        return $this->userModel::updateOrCreate(['id' => auth()->user()->id],
             [
-                "transaction_pin" => $data->transaction_pin,
+                "transaction_pin" => Hash::make($data->transaction_pin),
             ]);
     }
 

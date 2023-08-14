@@ -203,5 +203,7 @@ class UserService implements IUserService
         if ($validator->fails()) {
             throw new CustomValidationException($validator);
         }
+
+        return $this->userRepository->createUpdateTransactionPin($data);
     }
 }

@@ -144,6 +144,9 @@ class UserController extends Controller
     public function createUpdateTransactionPin(Request $request){
         try {
             $data = new CreateUpdateTransactionPinDTO($request->transaction_pin);
+            $result = $this->userService->createUpdateTransactionPin($data);
+            return $this->success('transaction pin created or updated successfully', $result, 200);
+
         } catch (\Throwable $th) {
             return $this->fail($th->getMessage());
         }

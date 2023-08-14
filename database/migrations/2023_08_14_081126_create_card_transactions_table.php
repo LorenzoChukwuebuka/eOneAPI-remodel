@@ -18,7 +18,7 @@ return new class extends Migration
             $table->double('previous_balance')->default(0);
             $table->string('transaction_reference');
             $table->string('transaction_type');
-            $table->string('status');
+            $table->string('status')->nullable();
             $table->timestamps();
         });
     }

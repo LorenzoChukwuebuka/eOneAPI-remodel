@@ -10,10 +10,6 @@ interface ICardRepository
 {
     public function create_card_for_users(CreateUserCardDTO $data);
 
-    public function forget_card_pin();
-
-    public function reset_card_pin();
-
     public function get_all_cards_for_a_particular_vendor($id);
 
     public function edit_card_status();
@@ -27,4 +23,6 @@ interface ICardRepository
     public function get_last_card();
 
     public function check_if_generated_number_exists($num);
+
+    public function find_card($id);
 }

@@ -91,4 +91,9 @@ class CardRepository implements ICardRepository
     {
         return $this->cardModel::latest()->limit(1)->select('card_number')->first();
     }
+
+    public function find_card($id)
+    {
+        return $this->cardModel::find($id);
+    }
 }

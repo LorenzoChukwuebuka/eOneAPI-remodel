@@ -3,19 +3,25 @@
 namespace App\Services\Transactions;
 
 use App\Custom\MailSender;
+use App\DTO\Card\FundCardDTO;
 use App\Exceptions\CustomValidationException;
+use App\Interface\IRepository\Card\ICardRepository;
+use App\Interface\IRepository\Card\ICardTransactionRepository;
 use App\Interface\IRepository\Card\IPaymentRepository;
 use App\Interface\IService\Card\IPaymentService;
 use App\Models\Wallet;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Validator;
 
 class PaymentService implements IPaymentService
 {
 
-    public function __construct(IPaymentRepository $paymentRepository)
+    public function __construct(IPaymentRepository $paymentRepository, ICardTransactionRepository $cardTransactionRepository, ICardRepository $cardRepository)
     {
         $this->paymentRepository = $paymentRepository;
+        $this->cardTransactionRepository = $cardTransactionRepository;
+        $this->cardRepository = $cardRepository;
     }
 
     public function initialize_payment(array $data)
@@ -111,6 +117,14 @@ class PaymentService implements IPaymentService
         $reference = $result->data->reference;
         $status = $result->data->status;
 
+        #check if referal already exists in db
+
+        $this->paymentRepository->check_if_reference_exists($reference);
+
+        if ($this->paymentRepository !== null) {
+            throw new \Exception("Possible duplicate transaction");
+        }
+
         #begin the payment process using a db::transaction
 
         return DB::transaction(function () use ($user_id, $amount, $email, $reference, $status) {
@@ -123,7 +137,7 @@ class PaymentService implements IPaymentService
                 'meta_data' => 'paystack wallet funding',
             ];
 
-            $payment = $this->paymentRepository->create_credit_transaction($data);
+            $payment = $this->paymentRepository->create_transaction($data);
 
             if ($payment) {
                 #check the balance of the user
@@ -142,13 +156,104 @@ class PaymentService implements IPaymentService
         });
 
     }
-    #this method is a dub
-    public function credit_user_account()
-    {}
-    public function debit_user_account()
-    {}
+
+    public function fund_card(FundCardDTO $data)
+    {
+        $validator = Validator::make((array) $data, [
+            "card_id" => "required",
+            "amount" => "required",
+        ]);
+
+        if ($validator->fails()) {
+            throw new CustomValidationException($validator);
+        }
+
+        return DB::transaction(function () use ($data) {
+
+            #get previous card balance
+            $previous_card_balance = DB::select('SELECT ifnull((select card_balance from cards where id = ?  order by id desc limit 1), 0 ) AS prevbal', [$data->card_id]);
+            #add the previous balance to the amount to get the current the current balance
+            $current_card_balance = (int) $previous_card_balance[0]->prevbal + (int) $data->amount;
+
+            $transactionRef = Str::random(10);
+
+            #create a card credit transaction
+            $transaction_data = (object) [
+                'card_id' => $data->card_id,
+                'amount' => $data->amount,
+                'previous_balance' => $previous_card_balance[0]->prevbal,
+                'current_balance' => $current_card_balance,
+                'transaction_ref' => $transactionRef,
+                'transaction_type' => 'credit',
+            ];
+
+            $card_credit_transaction = $this->cardTransactionRepository->create_card_transaction($transaction_data);
+
+            #add balance to card
+
+            $card = $this->cardRepository->find_card($data->card_id);
+
+            if ($card == null) {
+                throw new \Exception("Invalid card chosen");
+
+            }
+
+            #update card with the current balance
+
+            $card->card_balance = $current_card_balance;
+
+            $card->save();
+
+            #create a wallet debit transaction
+
+            $wallet_debit_transaction_data = (object) [
+                'user_id' => auth()->user()->id,
+                'amount' => $data->amount,
+                'transaction_type' => 'debit',
+                'reference' => $transactionRef,
+                'status' => 'success',
+                'meta_data' => 'card funding',
+                'card_id' => $data->card_id
+            ];
+
+            $wallet_debit_transaction = $this->paymentRepository->create_transaction($wallet_debit_transaction_data);
+
+            #check for previous wallet balance
+
+            $previous_wallet_balance = DB::select('SELECT ifnull((select available_balance from wallets where user_id = ?  order by id desc limit 1), 0 ) AS prevbal', [auth()->user()->id]);
+
+            if ($data->amount > (int) $previous_wallet_balance[0]->prevbal) {
+                throw new \Exception("Insuffient balance on wallet. Kindly top up your wallet");
+            }
+
+            #debit wallet
+
+            $wallet = Wallet::updateOrCreate(['user_id' => auth()->user()->id],
+                [
+                    "available_balance" => (int) $previous_wallet_balance[0]->prevbal - (int) $data->amount,
+                ]);
+
+            # if everything went well...
+            #update transaction card status to success
+
+            $updateCardTransactionStatus = $this->cardTransactionRepository->find_transaction($card_credit_transaction->id);
+
+            $updateCardTransactionStatus->status = 'success' ?? 'failed';
+
+            $updateCardTransactionStatus->save();
+
+        });
+
+    }
+
+
+    public function debit_card(){
+        
+    }
+
     public function get_all_transactions_for_a_user()
     {}
     public function get_user_transactions()
     {}
+
 }

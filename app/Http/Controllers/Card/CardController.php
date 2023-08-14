@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Card;
 
 use App\DTO\Card\CreateUserCardDTO;
+use App\DTO\Card\FundCardDTO;
 use App\Http\Controllers\Controller;
 use App\Interface\IService\Card\ICardService;
 use App\Traits\ApiResponse;
@@ -22,25 +23,7 @@ class CardController extends Controller
             $result = $this->cardService->create_card_for_users($data);
             return $this->success('card created successfully', $result, 200);
         } catch (\Throwable $th) {
-            return $this->fail([$th->getMessage(),$th->getLine(),$th->getFile()]);
-        }
-    }
-
-    public function forget_card_pin()
-    {
-        try {
-            //code...
-        } catch (\Throwable $th) {
-            return $this->fail($th->getMessage());
-        }
-    }
-
-    public function reset_card_pin()
-    {
-        try {
-            //code...
-        } catch (\Throwable $th) {
-            return $this->fail($th->getMessage());
+            return $this->fail([$th->getMessage(), $th->getLine(), $th->getFile()]);
         }
     }
 
@@ -92,5 +75,7 @@ class CardController extends Controller
             return $this->fail($th->getMessage());
         }
     }
+
+    
 
 }
