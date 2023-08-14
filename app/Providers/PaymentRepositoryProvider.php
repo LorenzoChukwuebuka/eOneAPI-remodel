@@ -4,6 +4,7 @@ namespace App\Providers;
 
  
 use Illuminate\Support\ServiceProvider;
+use App\Repository\Transactions\PaymentRepository;
 use App\Interface\IRepository\Card\IPaymentRepository;
 
 class PaymentRepositoryProvider extends ServiceProvider
@@ -13,7 +14,7 @@ class PaymentRepositoryProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(IPaymentRepository::class,PaymentRepository::class);
+        $this->app->bind(IPaymentRepository::class, PaymentRepository::class);
     }
 
     /**

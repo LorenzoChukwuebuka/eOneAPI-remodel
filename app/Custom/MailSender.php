@@ -4,11 +4,12 @@ declare (strict_types = 1);
 
 namespace App\Custom;
 
-use App\Mail\User\UserForgetPasswordMail;
-use App\Mail\User\UserVerifyAccountMail;
-use App\Mail\Vendor\VendorForgetPasswordMail;
-use App\Mail\Vendor\VendorVerifyAccountMail;
+use App\Mail\User\UserCreditMail;
 use Illuminate\Support\Facades\Mail;
+use App\Mail\User\UserVerifyAccountMail;
+use App\Mail\User\UserForgetPasswordMail;
+use App\Mail\Vendor\VendorVerifyAccountMail;
+use App\Mail\Vendor\VendorForgetPasswordMail;
 
 class MailSender
 {
@@ -35,5 +36,11 @@ class MailSender
         $mailData = ['token' => $token, 'businessname' => $username];
 
         Mail::to($email)->send(new VendorForgetPasswordMail($mailData));
+    }
+
+    public static function sendCreditMail(string $email, string $username, float | int $amount)
+    {
+       $mailData = ['username' => $username,'amount' => $amount];
+       Mail::to($email)->send(new UserCreditMail($mailData));
     }
 }

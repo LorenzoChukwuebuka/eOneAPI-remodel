@@ -1,13 +1,22 @@
 <?php
 
-namespace App\Services\Card;
+namespace App\Services\Transactions;
 
+use App\Custom\MailSender;
 use App\Exceptions\CustomValidationException;
+use App\Interface\IRepository\Card\IPaymentRepository;
 use App\Interface\IService\Card\IPaymentService;
+use App\Models\Wallet;
+use Illuminate\Support\Facades\DB;
 use Validator;
 
 class PaymentService implements IPaymentService
 {
+
+    public function __construct(IPaymentRepository $paymentRepository)
+    {
+        $this->paymentRepository = $paymentRepository;
+    }
 
     public function initialize_payment(array $data)
     {
@@ -16,7 +25,6 @@ class PaymentService implements IPaymentService
         $validator = Validator::make($data, [
             "amount" => "required",
             "user_id" => "required",
-            "card_id" => "required",
         ]);
 
         if ($validator->fails()) {
@@ -32,7 +40,7 @@ class PaymentService implements IPaymentService
             'amount' => $data["amount"] * 100,
             'metadata' => json_encode([
                 "user_id" => auth()->user()->id,
-                "card_id" => $data["card_id"],
+                "payer_email" => auth()->user()->email,
             ]),
 
         ];
@@ -56,8 +64,8 @@ class PaymentService implements IPaymentService
 
         #execute post
         $result = curl_exec($ch);
-        $err = curl_error($curl);
-        curl_close($curl);
+        $err = curl_error($ch);
+        curl_close($ch);
         $res = json_decode($result);
 
         return $res;
@@ -89,7 +97,6 @@ class PaymentService implements IPaymentService
 
         if ($err) {
             throw new \Exception("Curl Error: {$err}");
-
         }
 
         $result = json_decode($response);
@@ -97,7 +104,45 @@ class PaymentService implements IPaymentService
         if ($result->data->status !== 'success') {
             throw new \Exception("Transaction failed");
         }
+
+        $user_id = $result->data->metadata->user_id;
+        $amount = $result->data->amount / 100;
+        $email = $result->data->metadata->payer_email;
+        $reference = $result->data->reference;
+        $status = $result->data->status;
+
+        #begin the payment process using a db::transaction
+
+        return DB::transaction(function () use ($user_id, $amount, $email, $reference, $status) {
+            $data = (object) [
+                'user_id' => $user_id,
+                'amount' => $amount,
+                'transaction_type' => 'credit',
+                'reference' => $reference,
+                'status' => $status,
+                'meta_data' => 'paystack wallet funding',
+            ];
+
+            $payment = $this->paymentRepository->create_credit_transaction($data);
+
+            if ($payment) {
+                #check the balance of the user
+
+                $previous_balance = DB::select('SELECT ifnull((select available_balance from wallets where user_id = ?  order by id desc limit 1), 0 ) AS prevbal', [$user_id]);
+
+                #fund user's wallet
+
+                $wallet = Wallet::updateOrCreate(['user_id' => $user_id],
+                    [
+                        "available_balance" => (int) $amount + (int) $previous_balance[0]->prevbal,
+                    ]);
+            }
+
+            return MailSender::SendCreditMail(auth()->user()->email, auth()->user()->username, $amount);
+        });
+
     }
+    #this method is a dub
     public function credit_user_account()
     {}
     public function debit_user_account()

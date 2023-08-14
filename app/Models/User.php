@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Wallet;
+use App\Models\WalletTransactions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -40,10 +42,18 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
- 
-
     public function card()
     {
         return $this->hasMany(Card::class);
+    }
+
+    public function wallet()
+    {
+        return $this->hasOne(Wallet::class);
+    }
+
+    public function wallet_transactions()
+    {
+        return $this->hasMany(WalletTransactions::class);
     }
 }

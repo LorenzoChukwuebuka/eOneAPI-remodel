@@ -3,6 +3,7 @@ namespace App\Services\User;
 
 use App\Custom\MailSender;
 use App\DTO\OTP\CreateOTPDTO;
+use App\DTO\User\CreateUpdateTransactionPinDTO;
 use App\DTO\User\CreateUserDTO;
 use App\DTO\User\EditUserDTO;
 use App\DTO\User\SearchUserDTO;
@@ -191,5 +192,16 @@ class UserService implements IUserService
 
         return $this->otpService->deleteOTP($data->token);
 
+    }
+
+    public function createUpdateTransactionPin(CreateUpdateTransactionPinDTO $data)
+    {
+        $validator = Validator::make((array) $data, [
+            "transaction_pin" => "required",
+        ]);
+
+        if ($validator->fails()) {
+            throw new CustomValidationException($validator);
+        }
     }
 }

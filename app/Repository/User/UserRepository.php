@@ -2,6 +2,7 @@
 
 namespace App\Repository\User;
 
+use App\DTO\User\CreateUpdateTransactionPinDTO;
 use App\DTO\User\CreateUserDTO;
 use App\DTO\User\EditUserDTO;
 use App\DTO\User\SearchUserDTO;
@@ -140,6 +141,14 @@ class UserRepository implements IUserRepository
 
         return $user->save();
 
+    }
+
+    public function createUpdateTransactionPin(CreateUpdateTransactionPinDTO $data)
+    {
+        return $this->userModel::updateOrCreate(['user_id' => auth()->user->id],
+            [
+                "transaction_pin" => $data->transaction_pin,
+            ]);
     }
 
 }

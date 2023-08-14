@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers\User;
 
-use App\DTO\User\CreateUserDTO;
-use App\DTO\User\EditUserDTO;
-use App\DTO\User\SearchUserDTO;
-use App\DTO\User\UserForgetPasswordDTO;
-use App\DTO\User\UserLoginDTO;
-use App\DTO\User\UserResetPasswordDTO;
-use App\DTO\User\VerifyUserDTO;
-use App\Http\Controllers\Controller;
-use App\Interface\IService\User\IUserService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
+use App\DTO\User\EditUserDTO;
+use App\DTO\User\UserLoginDTO;
+use App\DTO\User\CreateUserDTO;
+use App\DTO\User\SearchUserDTO;
+use App\DTO\User\VerifyUserDTO;
+use App\Http\Controllers\Controller;
+use App\DTO\User\UserResetPasswordDTO;
+use App\DTO\User\UserForgetPasswordDTO;
+use App\Interface\IService\User\IUserService;
+use App\DTO\User\CreateUpdateTransactionPinDTO;
 
 class UserController extends Controller
 {
@@ -135,6 +136,14 @@ class UserController extends Controller
     {
         try {
             //code...
+        } catch (\Throwable $th) {
+            return $this->fail($th->getMessage());
+        }
+    }
+
+    public function createUpdateTransactionPin(Request $request){
+        try {
+            $data = new CreateUpdateTransactionPinDTO($request->transaction_pin);
         } catch (\Throwable $th) {
             return $this->fail($th->getMessage());
         }

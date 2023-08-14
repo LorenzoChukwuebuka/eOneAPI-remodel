@@ -9,6 +9,7 @@ use App\DTO\User\SearchUserDTO;
 use App\DTO\User\VerifyUserDTO;
 use App\DTO\User\UserResetPasswordDTO;
 use App\DTO\User\UserForgetPasswordDTO;
+use App\DTO\User\CreateUpdateTransactionPinDTO;
 
 interface IUserService
 {
@@ -24,4 +25,5 @@ interface IUserService
     public function login(UserLoginDTO $data);
     public function changePassword();
     public function verify_user(VerifyUserDTO $data);
+    public function createUpdateTransactionPin(CreateUpdateTransactionPinDTO $data);
 }
