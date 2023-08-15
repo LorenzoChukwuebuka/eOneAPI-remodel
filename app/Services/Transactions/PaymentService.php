@@ -3,6 +3,7 @@
 namespace App\Services\Transactions;
 
 use App\Custom\MailSender;
+use App\DTO\Card\DebitCardDTO;
 use App\DTO\Card\FundCardDTO;
 use App\Exceptions\CustomValidationException;
 use App\Interface\IRepository\Card\ICardRepository;
@@ -213,7 +214,7 @@ class PaymentService implements IPaymentService
                 'reference' => $transactionRef,
                 'status' => 'success',
                 'meta_data' => 'card funding',
-                'card_id' => $data->card_id
+                'card_id' => $data->card_id,
             ];
 
             $wallet_debit_transaction = $this->paymentRepository->create_transaction($wallet_debit_transaction_data);
@@ -246,9 +247,67 @@ class PaymentService implements IPaymentService
 
     }
 
+    public function debit_card(DebitCardDTO $data)
+    {
+        $validator = Validator::make((array) $data, [
+            "card_id" => "required",
+            "amount" => "required",
+        ]);
 
-    public function debit_card(){
-        
+        if ($validator->fails()) {
+            throw new CustomValidationException($validator);
+        }
+
+        return DB::transaction(function () use ($data) {
+
+            #pull the neccessary information from the card
+            $card = $this->cardRepository->find_card($data->card_id);
+
+            $vendorId = $card->vendor_id;
+            $accountType = $card->account_type_id;
+            $limit = $card->card_limit;
+
+            if ((int) $data->amount > (int) $card->card_balance) {
+                throw new \Exception("Insufficient card balance. Kindly top up your card to enjoy our services");
+            }
+
+            #get previous card balance
+            $previous_card_balance = DB::select('SELECT ifnull((select card_balance from cards where id = ?  order by id desc limit 1), 0 ) AS prevbal', [$data->card_id]);
+            #add the previous balance to the amount to get the current the current balance
+            $current_card_balance = (int) $previous_card_balance[0]->prevbal - (int) $data->amount;
+
+            $transactionRef = Str::random(10);
+
+            #create debit transaction
+
+            #create a card credit transaction
+            $card_debit_transaction_data = (object) [
+                'card_id' => $data->card_id,
+                'amount' => $data->amount,
+                'previous_balance' => $previous_card_balance[0]->prevbal,
+                'current_balance' => $current_card_balance,
+                'transaction_ref' => $transactionRef,
+                'transaction_type' => 'debit',
+            ];
+
+            $card_debit_transaction = $this->cardTransactionRepository->create_card_transaction($card_debit_transaction_data);
+
+            #add balance to card
+
+            $card = $this->cardRepository->find_card($data->card_id);
+
+            if ($card == null) {
+                throw new \Exception("Invalid card chosen");
+            }
+
+            #update card with the current balance
+            $card->card_balance = $current_card_balance;
+
+            $card->save();
+
+            #credit vendor account
+
+        });
     }
 
     public function get_all_transactions_for_a_user()

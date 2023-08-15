@@ -21,6 +21,7 @@ Route::prefix('vendor_restricted')->group(function () {
             Route::post('create-users-card', 'create_card_for_users');
             Route::get('get-registered-cards-per-vendor', 'get_all_cards_for_a_particular_vendor');
             Route::get('get-user-card-details/{id}', 'get_user_card_details');
+            
         });
 
         Route::controller(VendorBankController::class)->group(function () {
