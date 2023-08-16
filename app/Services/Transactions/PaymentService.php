@@ -267,7 +267,7 @@ class PaymentService implements IPaymentService
             $accountType = $card->account_type_id;
             $limit = $card->card_limit;
 
-            if ((int) $data->amount > (int) $card->card_balance) {
+            if (($accountType == 2) && (int) $data->amount > (int) $card->card_balance) {
                 throw new \Exception("Insufficient card balance. Kindly top up your card to enjoy our services");
             }
 
