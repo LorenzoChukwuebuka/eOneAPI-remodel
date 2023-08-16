@@ -271,6 +271,10 @@ class PaymentService implements IPaymentService
                 throw new \Exception("Insufficient card balance. Kindly top up your card to enjoy our services");
             }
 
+            if (($accountType == 1) && ($card->card_balance + (-1 * $data->amount) < $limit)) {
+                throw new \Exception("Card limit has been  exceeded for this card");
+            }
+
             #get previous card balance
             $previous_card_balance = DB::select('SELECT ifnull((select card_balance from cards where id = ?  order by id desc limit 1), 0 ) AS prevbal', [$data->card_id]);
             #add the previous balance to the amount to get the current the current balance
