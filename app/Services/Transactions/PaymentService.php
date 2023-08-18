@@ -2,27 +2,30 @@
 
 namespace App\Services\Transactions;
 
-use App\Custom\MailSender;
-use App\DTO\Card\DebitCardDTO;
-use App\DTO\Card\FundCardDTO;
-use App\Exceptions\CustomValidationException;
-use App\Interface\IRepository\Card\ICardRepository;
-use App\Interface\IRepository\Card\ICardTransactionRepository;
-use App\Interface\IRepository\Card\IPaymentRepository;
-use App\Interface\IService\Card\IPaymentService;
-use App\Models\Wallet;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Validator;
+use App\Models\Wallet;
+use App\Custom\MailSender;
+use Illuminate\Support\Str;
+use App\Models\VendorWallet;
+use App\DTO\Card\FundCardDTO;
+use App\DTO\Card\DebitCardDTO;
+use Illuminate\Support\Facades\DB;
+use App\Exceptions\CustomValidationException;
+use App\Interface\IService\Card\IPaymentService;
+use App\Interface\IRepository\Card\ICardRepository;
+use App\Interface\IRepository\Card\IPaymentRepository;
+use App\Interface\IRepository\Card\ICardTransactionRepository;
+use App\Interface\IRepository\Vendor\IVendorTransactionRepository;
 
 class PaymentService implements IPaymentService
 {
 
-    public function __construct(IPaymentRepository $paymentRepository, ICardTransactionRepository $cardTransactionRepository, ICardRepository $cardRepository)
+    public function __construct(IPaymentRepository $paymentRepository, ICardTransactionRepository $cardTransactionRepository, ICardRepository $cardRepository, IVendorTransactionRepository $vendorTransactionRepository)
     {
         $this->paymentRepository = $paymentRepository;
         $this->cardTransactionRepository = $cardTransactionRepository;
         $this->cardRepository = $cardRepository;
+        $this->vendorTransactionRepository = $vendorTransactionRepository;
     }
 
     public function initialize_payment(array $data)
@@ -267,10 +270,12 @@ class PaymentService implements IPaymentService
             $accountType = $card->account_type_id;
             $limit = $card->card_limit;
 
+            #for debit cards
             if (($accountType == 2) && (int) $data->amount > (int) $card->card_balance) {
                 throw new \Exception("Insufficient card balance. Kindly top up your card to enjoy our services");
             }
 
+            #for credit cards
             if (($accountType == 1) && ($card->card_balance + (-1 * $data->amount) < $limit)) {
                 throw new \Exception("Card limit has been  exceeded for this card");
             }
@@ -311,7 +316,42 @@ class PaymentService implements IPaymentService
 
             #credit vendor account
 
+            #normally a percentage of the payment should to the vendor
+            #pending task for now
+
+            $vendor_credit_transaction_data = (object) [
+                "vendor_id" => $vendorId,
+                "amount" => $data->amount,
+                "transaction_type" => 'credit',
+                "transaction_reference" => $transactionRef,
+                "card_transaction_id" => $card_debit_transaction->id,
+                "status" => "successful",
+                "meta_data" => "successful transaction",
+            ];
+
+            $vendor_credit_transaction = $this->vendorTransactionRepository->create_vendor_transaction($vendor_credit_transaction_data);
+
+            #credit vendor wallet
+
+            $vendor_wallet_previous_balance = DB::select('SELECT ifnull((select available_balance from vendor_wallets where vendor_id = ?  order by id desc limit 1), 0 ) AS prevbal', [$card->vendor_id]);
+
+            #fund user's wallet
+
+            $vendor_wallet = VendorWallet::updateOrCreate(['vendor_id' => $card->vendor_id],
+                [
+                    "available_balance" => (int) $data->amount + (int) $vendor_wallet_previous_balance[0]->prevbal,
+                ]);
+
         });
+
+          # if everything went well...
+            #update transaction card status to success
+
+            $updateCardTransactionStatus = $this->cardTransactionRepository->find_transaction($card_credit_transaction->id);
+
+            $updateCardTransactionStatus->status = 'success' ?? 'failed';
+
+            $updateCardTransactionStatus->save();
     }
 
     public function get_all_transactions_for_a_user()

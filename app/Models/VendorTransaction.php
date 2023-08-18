@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class VendorTransaction extends Model
 {
     use HasFactory;
+
+    protected $guarded = [];
 }

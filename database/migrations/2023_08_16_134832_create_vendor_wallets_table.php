@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('vendor_wallets', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('vendor_id');
             $table->string('available_balance')->default(0);
             $table->string('pending_balance')->default(0);
             $table->string('status')->default('active');
