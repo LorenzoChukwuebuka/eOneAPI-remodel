@@ -1,5 +1,5 @@
 <?php
-namespace App\Interface\Loyalty;
+namespace App\Interface\IRepository\Loyalty;
 
 use App\DTO\Loyalty\CreateLoyaltyDTO;
 

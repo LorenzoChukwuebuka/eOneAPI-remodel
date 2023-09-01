@@ -6,7 +6,7 @@ use App\DTO\Card\CreateCardHistoryDTO;
 use App\Interface\IRepository\Card\ICardHistoryRepository;
 use App\Models\CardHistory;
 
-class CardHistoryRepostory implements ICardHistoryRepository
+class CardHistoryRepository implements ICardHistoryRepository
 {
     public function __construct(CardHistory $cardHistoryModel)
     {
