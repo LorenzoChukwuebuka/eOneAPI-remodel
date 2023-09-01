@@ -33,6 +33,8 @@ class AdminClientService implements IAdminClientService
             throw new CustomValidationException($validator);
         }
 
+        //   MailSender::verifyClientAccount($data->email,)
+
         return $this->adminClientRepository->createClient($data);
     }
 

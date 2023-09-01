@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Card;
 
 use App\DTO\Card\CreateUserCardDTO;
-use App\DTO\Card\FundCardDTO;
 use App\Http\Controllers\Controller;
 use App\Interface\IService\Card\ICardService;
 use App\Traits\ApiResponse;
@@ -75,7 +74,5 @@ class CardController extends Controller
             return $this->fail($th->getMessage());
         }
     }
-
-    
 
 }

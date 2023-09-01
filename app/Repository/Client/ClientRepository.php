@@ -7,6 +7,8 @@ use App\DTO\Client\ClientLoginDTO;
 use App\DTO\Client\ClientResetPasswordDTO;
 use App\Interface\IRepository\Client\IClientRepository;
 use App\Models\Client;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class ClientRepository implements IClientRepository
 {
@@ -39,13 +41,37 @@ class ClientRepository implements IClientRepository
 
     public function clientForgetPin(ClientForgetPasswordDTO $data)
     {
-        #generate token and store in otp
+        $getVendorName = $this->clientModel->where('email', $data->email)->first();
+
+        //insert into password reset db
+        DB::table('password_resets')->insert([
+            'email' => $data->email,
+            'token' => $data->token,
+            'created_at' => Carbon::now(),
+        ]);
 
     }
 
     public function resetClientPin(ClientResetPasswordDTO $data)
     {
+        $selectedRows = DB::table('password_resets')
+            ->select('email')
+            ->where('token', '=', $data->otp)
+            ->get();
 
+        if ($selectedRows->count() == 0) {
+            throw new \Exception("Invalid OTP");
+        }
+
+        //   $selectedRows[0]->email;
+        $clientId = $this->clientModel::where('email', $selectedRows[0]->email)->first();
+
+        #update the password
+        $clientId->update([
+            'password' => Hash::make($data->pin),
+        ]);
+        #delete the token
+        return DB::statement("DELETE FROM password_resets WHERE email = ? AND token = ? ", [$selectedRows[0]->email, $data->otp]);
     }
 
 }

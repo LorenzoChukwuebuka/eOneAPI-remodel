@@ -2,12 +2,14 @@
 
 namespace App\Services\Client;
 
-use App\DTO\Client\ClientForgetPasswordDTO;
+use Validator;
+use App\Custom\MailSender;
+use Illuminate\Support\Str;
 use App\DTO\Client\ClientLoginDTO;
 use App\DTO\Client\ClientResetPasswordDTO;
-use App\Interface\IRepository\Client\IClientRepository;
+use App\DTO\Client\ClientForgetPasswordDTO;
 use App\Interface\IService\Client\IClientService;
-use Validator;
+use App\Interface\IRepository\Client\IClientRepository;
 
 class ClientService implements IClientService
 {
@@ -29,7 +31,6 @@ class ClientService implements IClientService
 
         $client = $this->clientRepository->loginClient($data);
 
-
         return $client;
 
     }
@@ -44,9 +45,16 @@ class ClientService implements IClientService
             throw new CustomValidationException($validator);
         }
 
+        $token = Str::random(7);
+
+        $data->token = $token;
+
+        $repo = $this->clientRepository->clientForgetPin($data);
+
         #send mail to client
 
-        return $this->clientRepository->clientForgetPin($data);
+        MailSender::clientForgetPassword();
+
     }
 
     public function resetClientPin(ClientResetPasswordDTO $data)

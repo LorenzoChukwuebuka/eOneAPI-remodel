@@ -4,12 +4,14 @@ declare (strict_types = 1);
 
 namespace App\Custom;
 
+use App\Mail\Client\ClientForgetPasswordMail;
+use App\Mail\Client\ClientVerifyAccountMail;
 use App\Mail\User\UserCreditMail;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\User\UserVerifyAccountMail;
 use App\Mail\User\UserForgetPasswordMail;
-use App\Mail\Vendor\VendorVerifyAccountMail;
+use App\Mail\User\UserVerifyAccountMail;
 use App\Mail\Vendor\VendorForgetPasswordMail;
+use App\Mail\Vendor\VendorVerifyAccountMail;
+use Illuminate\Support\Facades\Mail;
 
 class MailSender
 {
@@ -40,7 +42,20 @@ class MailSender
 
     public static function sendCreditMail(string $email, string $username, float | int $amount)
     {
-       $mailData = ['username' => $username,'amount' => $amount];
-       Mail::to($email)->send(new UserCreditMail($mailData));
+        $mailData = ['username' => $username, 'amount' => $amount];
+        Mail::to($email)->send(new UserCreditMail($mailData));
+    }
+
+    public static function verifyClientAccount(string $email, string | int $otp, string $businessname)
+    {
+        $mailData = ['token' => $otp, 'businessname' => $businessname];
+        Mail::to($email)->send(new ClientVerifyAccountMail($mailData));
+    }
+
+    public static function clientForgetPassword(string $email, string $username, string | int $token)
+    {
+        $mailData = ['token' => $token, 'businessname' => $username];
+        Mail::to($email)->send(new ClientForgetPasswordMail($mailData));
+
     }
 }

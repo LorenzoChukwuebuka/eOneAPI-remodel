@@ -2,21 +2,21 @@
 
 namespace App\Services\Client;
 
-use Validator;
 use App\Custom\MailSender;
-use Illuminate\Support\Str;
 use App\DTO\OTP\CreateOTPDTO;
-use App\DTO\Vendor\EditVendorDTO;
 use App\DTO\Vendor\CreateVendorDTO;
-use App\Interface\IService\IOTPService;
+use App\DTO\Vendor\EditVendorDTO;
 use App\Exceptions\CustomValidationException;
-use App\Interface\IService\Client\IClientVendorService;
 use App\Interface\IRepository\Client\IClientVendorRepository;
+use App\Interface\IService\Client\IClientVendorService;
+use App\Interface\IService\IOTPService;
+use Illuminate\Support\Str;
+use Validator;
 
 class ClientVendorService implements IClientVendorService
 {
 
-    public function __construct(IClientVendorRepository $clientVendorRepository,IOTPService $otpService)
+    public function __construct(IClientVendorRepository $clientVendorRepository, IOTPService $otpService)
     {
         $this->clientVendorRepository = $clientVendorRepository;
         $this->otpService = $otpService;
@@ -36,6 +36,7 @@ class ClientVendorService implements IClientVendorService
             "latitude" => [],
             "password" => "required|min:6",
             "phone_number" => "required|min:11",
+            "username" => "required",
         ]);
 
         if ($validator->fails()) {
@@ -61,7 +62,7 @@ class ClientVendorService implements IClientVendorService
         $result = $this->clientVendorRepository->getSingleVendor($id);
 
         if ($result == null) {
-            throw new \Exception ("No record found");
+            throw new \Exception("No record found");
         }
 
         return $result;
@@ -73,7 +74,7 @@ class ClientVendorService implements IClientVendorService
         $result = $this->clientVendorRepository->getAllVendorsForAParticularClient($id);
 
         if ($result->count() == 0) {
-            throw new \Exception ("No result found");
+            throw new \Exception("No result found");
         }
 
         return $result;
@@ -90,7 +91,6 @@ class ClientVendorService implements IClientVendorService
     public function deleteVendors($id)
     {
 
-   
         return $this->clientVendorRepository->deleteVendors($id);
     }
 
